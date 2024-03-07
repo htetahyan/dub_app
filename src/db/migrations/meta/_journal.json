@@ -1,0 +1,20 @@
+{
+  "version": "5",
+  "dialect": "pg",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1709799931418,
+      "tag": "0000_aromatic_silvermane",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1709799946549,
+      "tag": "0001_conscious_the_stranger",
+      "breakpoints": true
+    }
+  ]
+}
