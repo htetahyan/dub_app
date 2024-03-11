@@ -15,6 +15,13 @@
       "when": 1709799946549,
       "tag": "0001_conscious_the_stranger",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1709971871114,
+      "tag": "0002_fluffy_omega_flight",
+      "breakpoints": true
     }
   ]
 }
