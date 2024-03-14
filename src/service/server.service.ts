@@ -1,10 +1,9 @@
-import cloudinary from "~/storage/cloudinary";
+
 import {client, db} from "~/db/db";
-import {selectBlogFromTitle} from "~/db/STATEMENT";
 import {blog} from "~/db/schema/schema";
-import {QueryResult, QueryResultRow} from "pg";
-import {Assume} from "drizzle-orm/utils";
+
 import {eq} from "drizzle-orm/sql/expressions/conditions";
+import {asc} from "drizzle-orm";
 
 export const postFormData = async (url: string, formData: FormData) => {
     'use server'
@@ -28,7 +27,15 @@ export const postFormData = async (url: string, formData: FormData) => {
 };
 
 export const getBlogByTitle = async (title: string) => {
-const resBlog=await db.select().from(blog).where(eq(blog.title, title))
+    'use server'
+const resBlog=await db!.select().from(blog).where(eq(blog.title, title))
     return resBlog[0] || null
 
 }
+export const getBlogs = async (limit: number, offset: number) => {
+'use server'
+    const resBlog=await db!.select().from(blog).limit(limit).offset(offset).orderBy(asc(blog.id)).finally(()=>client.end())
+    if(!resBlog) return client.connect() ;
+    return resBlog
+}
+

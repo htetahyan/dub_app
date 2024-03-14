@@ -1,5 +1,5 @@
 import cloudinary from "~/storage/cloudinary";
-import { postFormData } from "~/service/api.service";
+import { postFormData } from "~/service/server.service";
 
 interface CloudinaryUploadResult {
     public_id: string;

@@ -4,12 +4,16 @@ import {atob} from "node:buffer";
 import rehypeHighlight from "rehype-highlight";
 import '~/app/arta.css'
 import {notFound} from "next/navigation";
-import {getBlogByTitle} from "~/service/api.service";
+import {getBlogByTitle} from "~/service/server.service";
 import Image from "next/image";
 import Linker from "~/components/Linker";
 import {arrow_right_icon} from "~/assets/exporter";
 import React from "react";
-import {Button} from "~/components/Button";
+
+import {blurUrl} from "~/utils/utils";
+import BackBtn from "~/components/BackBtn";
+
+
 
 
 const options = {
@@ -24,7 +28,7 @@ const {file,image,title}=await fetchData(params.title)
 
     return (
         <div className={'w-full  h-fit grid gap-2 p-2 lg:p-4 text-primary'}>
-            <Button className={'items-start w-fit'} variant={'link'}>Back</Button>
+<BackBtn/>
             <div className={'w-auto grid justify-center rounded-md lg:rounded-2xl overflow-hidden '}>
 
                 <Image src={image!} alt={'sd'}
@@ -69,4 +73,3 @@ const fetchData = async (blogTitle: string) => {
          notFound()
     }
  }
-const blurUrl='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAACCAYAAAB/qH1jAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAJ0lEQVR4nGPY2fXjv458/H9Bbtf/IDbD/7v//8/Mvfq/J+nEfxAbAF3NFsFiuaE1AAAAAElFTkSuQmCC'

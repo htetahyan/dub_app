@@ -19,13 +19,14 @@ export const users = mysqlTable("users", {
 export const blog = mysqlTable('blogs', {
     id: int('id').primaryKey().autoincrement(),
     title: varchar('title', { length: 256 }),
+techs: varchar('techs', { length: 256 }),
     content: text('content'),
     image: varchar('image', { length: 256 }), // Assuming 'image' is a text field for the URL
     author_id: int('user_id').notNull(),
     view_count: int('view_count').default(0), // Changed to integer with default 0
-    created_at: timestamp('created_at').defaultNow(),
+    created_at: int('created_at'),
 });
-
+export type BLOG = typeof blog.$inferSelect;
 export const usersRelations = relations(users, ({ many }) => ({
     blogs: many(blog)
 }));

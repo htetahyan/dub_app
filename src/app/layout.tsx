@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
-import "@code-hike/mdx/dist/index.css"
+
 import "./globals.css";
-import Header from "~/components/Header";
+
+
 import Providers from "~/providers/Provider";
 import Sidebar from "~/components/sidebar/sidebar";
 import localFont from "next/font/local";
@@ -24,7 +25,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning className={`${NeueMontrealRegular.variable}`}>
-      <body className={'font-primary'} >
+      <body className={'font-primary text-primary'} >
       <Providers>
       <Sidebar>
 

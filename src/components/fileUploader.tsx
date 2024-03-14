@@ -1,6 +1,6 @@
 
 //Todo upload image to cloudinary and save url to database
-import {postFormData} from "~/service/api.service";
+import {postFormData} from "~/service/server.service";
 import {Button} from "~/components/Button";
 
 import {uploadImage} from "~/storage/uploader";

@@ -1,21 +1,15 @@
 import React from 'react';
 import Header from "~/components/Header";
 import Accordion from "~/components/sidebar/Accordion";
+import AccordionContainer from "~/components/sidebar/AccordionContainer";
 
 const Sidebar = ({children}: { children: React.ReactNode }) => {
     return (
         <div>
             <Header/>
-
+<div className={'fixed top-0 h-screen w-screen -z-10 bg-gradient-to-b from-slate-50 to-fuchsia-50'}></div>
             <div className={'grid lg:grid-cols-5  '}>
-                <div className={'sticky hidden lg:block top-[10vh] col-start-1 col-end-2 min-h-screen left-0 overflow-y-auto max-h-[90vh]'}>
-                    <div className={'flex flex-col h-[calc(100%-10vh)] overflow-y-auto gap-2 '}>
-                        <Accordion title={''}>
-                            hello
-                        </Accordion>
-
-                    </div>
-                </div>
+                <AccordionContainer/>
 <div className={'lg:col-start-2 lg:col-end-6'}>
                 {children}
 </div>

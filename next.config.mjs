@@ -7,7 +7,7 @@ import rehypeHighlight from "rehype-highlight";
 const nextConfig = {
  pageExtensions: ["ts", "tsx", "js", "jsx", "md", "mdx"],
 images: {
-    remotePatterns: [{protocol: "https", hostname: "res.cloudinary.com"}],        // Adding policies:
+    remotePatterns: [{protocol: "https", hostname: "res.cloudinary.com"}, {protocol: "https", hostname: "images.unsplash.com"}],        // Adding policies:
     /*  async headers() {
           return [
               {
