@@ -9,6 +9,7 @@ const generateUnit8Array = (secret: string) => {
   return  Uint8Array.from(Buffer.from(secret,'base64'));
 }
 export const generateAccessToken = async (payload: any) => {
+    console.log(payload)
     return await new SignJWT(payload).setSubject(payload.id)
         .setProtectedHeader({
             alg: "HS256",
@@ -42,6 +43,10 @@ export const verifyToken =  async(token: string) => {
 export const decodeJWTToken = async (token: string) => {
     return decodeJwt(token);
 };
+export const extractUserIdFromToken = async (token: string) : Promise<number | undefined> => {
+    const payload = await decodeJWTToken(token);
+    return parseInt(<string>payload.sub)
+}
 
 export const cookieOptions :Partial<ResponseCookie> | undefined = {
     httpOnly: true,

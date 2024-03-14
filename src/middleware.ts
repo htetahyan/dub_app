@@ -20,5 +20,5 @@ const path=req.nextUrl.pathname
     }
 }
 export const config = {
-    matcher: ['/api/admin/:path*','/blog','/blog:path',],
+    matcher: ['/api/admin/:path*','/blog','/blog/:path*',],
 };

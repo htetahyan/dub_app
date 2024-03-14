@@ -1,6 +1,6 @@
 import {getGoogleOAuthToken, getGoogleUserInfo} from "~/service/oAuth.service";
 import {createSession, findExistORCreateUser} from "~/service/user.service";
-import {InferSelectUser, SelectUser} from "~/db/schema/schema";
+
 import {NextRequest, NextResponse} from "next/server";
 import {cookies} from "next/headers";
 import {cookieOptions, generateAccessToken, generateRefreshToken} from "~/service/jwt.service";
@@ -17,6 +17,7 @@ cookies().set('access_token',await generateAccessToken(user),cookieOptions)
 return NextResponse.redirect('http://localhost:3000/')
 
     } catch (error) {
+
         // @ts-ignore
         return NextResponse.json({message: error.message}, {status: 500});
     }
