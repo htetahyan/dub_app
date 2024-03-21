@@ -6,6 +6,7 @@ import "./globals.css";
 import Providers from "~/providers/Provider";
 import Sidebar from "~/components/sidebar/sidebar";
 import localFont from "next/font/local";
+import Footer from "~/components/Footer";
 const NeueMontrealRegular=localFont(
     {
         src: '../fonts/NeueMontreal-Regular.woff2',
@@ -31,6 +32,7 @@ export default function RootLayout({
 
       {children}
       </Sidebar>
+          <Footer/>
           </Providers>
       </body>
     </html>

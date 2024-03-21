@@ -3,8 +3,10 @@ import Image from "next/image";
 import {dropDown_icon} from "~/assets/exporter";
 import Linker from "~/components/Linker";
 import Link from "next/link";
+import {getBlogsByTypeId} from "~/service/server.service";
 
-const Accordion = ({children,title}: { children: React.ReactNode, title: string }) => {
+const Accordion =async ({id,title}: { id: number, title: string }) => {
+  const blog= await getBlogsByTypeId(id)
     return (
         <div>
             <div
@@ -12,7 +14,7 @@ const Accordion = ({children,title}: { children: React.ReactNode, title: string 
                 tabIndex={1}
             >
                 <div className="flex cursor-pointer items-center justify-between">
-                    <span>EDUSN</span>
+                    <span>{title}</span>
                     <Image
                         src={dropDown_icon} alt={'dropdown'}
                         className="h-5 w-5 transition-all duration-500 group-focus:-rotate-180"
@@ -21,9 +23,11 @@ const Accordion = ({children,title}: { children: React.ReactNode, title: string 
                 <div
                     className="invisible h-auto max-h-0  items-center opacity-0 transition-all px-2 group-focus:visible group-focus:max-h-screen group-focus:opacity-100 group-focus:duration-1000"
                 >
-                    <Link href={'/blogs/1'} prefetch={true}>
-                        Blogs
-                    </Link>
+                    {blog?.map((blog)=>{
+                        return(
+                            <Link href={'/blogs/'+blog.title} key={blog.id} className={'hover:underline'}>{blog.title}</Link>
+                        )
+                    })}
                 </div>
             </div>
         </div>

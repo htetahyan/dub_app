@@ -1,4 +1,4 @@
-import {index, int, mysqlTable, text, timestamp, varchar} from 'drizzle-orm/mysql-core';
+import { index, int, mysqlTable, text, timestamp, varchar } from 'drizzle-orm/mysql-core';
 import { relations } from 'drizzle-orm';
 
 const role = mysqlTable('role', {
@@ -19,39 +19,22 @@ export const users = mysqlTable("users", {
 export const blog = mysqlTable('blogs', {
     id: int('id').primaryKey().autoincrement(),
     title: varchar('title', { length: 256 }),
-techs: varchar('techs', { length: 256 }),
+    slug: varchar('slug', { length: 256 }),
+    type_id: int('type_id').references(() => type.id, { onDelete: 'cascade' }), // Changed to 'cascade'
+    techs: varchar('techs', { length: 256 }),
     content: text('content'),
-    image: varchar('image', { length: 256 }), // Assuming 'image' is a text field for the URL
+    image: varchar('image', { length: 256 }),
     author_id: int('user_id').notNull(),
-    view_count: int('view_count').default(0), // Changed to integer with default 0
+    view_count: int('view_count').default(0),
     created_at: int('created_at'),
 });
-export type BLOG = typeof blog.$inferSelect;
-export const usersRelations = relations(users, ({ many }) => ({
-    blogs: many(blog)
-}));
-
-export const blogRelations = relations(blog, ({ one, many }) => ({
-    author: one(users, {
-        fields: [blog.author_id],
-        references: [users.id]
-    }),
-    techs: many(techs)
-}));
 
 export const sessions = mysqlTable("sessions", {
     id: int("id").primaryKey().autoincrement(),
-    user_id: int("user_id").references(() => users.id),
+    user_id: int("user_id").references(() => users.id, { onDelete: 'cascade' }), // Changed to 'cascade'
     created_at: timestamp("created_at").defaultNow(),
     agent: varchar("agent", { length: 256 }),
-})
-
-export const sessionsAndUserRelations = relations(sessions, ({ one }) => ({
-    user: one(users, {
-        fields: [sessions.user_id],
-        references: [users.id]
-    })
-}));
+});
 
 export const techs = mysqlTable('techs', {
     id: int('id').primaryKey().autoincrement(),
@@ -59,8 +42,25 @@ export const techs = mysqlTable('techs', {
     created_at: timestamp('created_at').defaultNow(),
 });
 
-export const techsRelations = relations(techs, ({ many }) => ({
-    blogs: many(blog)
+export const type = mysqlTable('type', {
+    id: int('id').primaryKey().autoincrement(),
+    name: varchar('name', { length: 256 }),
+});
+
+export const blogs_techs = mysqlTable('blogs_techs', {
+    blog_id: int('blog_id').references(() => blog.id, { onDelete: 'cascade' }), // Changed to 'cascade'
+    tech_id: int('tech_id').references(() => techs.id, { onDelete: 'cascade' }), // Changed to 'cascade'
+}, (t) => ({
+    blogs_techsIdx: index('blogs_techs_idx').on(t.blog_id, t.tech_id)
 }));
-export type SelectUser = typeof users.$inferSelect;
+
+export const likes = mysqlTable('likes', {
+    id: int('id').primaryKey().autoincrement(),
+    user_id: int('user_id').references(() => users.id, { onDelete: 'cascade' }), // Changed to 'cascade'
+    blog_id: int('blog_id').references(() => blog.id, { onDelete: 'cascade' }), // Changed to 'cascade'
+});
+
+export type USER = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;
+export type TYPE=typeof type.$inferSelect
+export type BLOG = typeof blog.$inferSelect;

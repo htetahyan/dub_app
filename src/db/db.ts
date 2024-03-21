@@ -1,42 +1,27 @@
-
 import { drizzle } from "drizzle-orm/mysql2";
-import { Pool } from "pg";
 import dotenv from "dotenv";
 import * as schema from './schema/schema';
-import { users } from "./schema/schema";
 import mysql from "mysql2/promise";
+
 dotenv.config();
 
 const config = {
-    host:'62.72.58.176',
-    database:'report',
-    port:3306,
-    user:'jeremys',
-    password: 'report_ps',
+    host: process.env.DB_HOST || '62.72.58.176',
+    database: process.env.DB_NAME || 'report',
+    port:  3306,
+    user: process.env.DB_USER || 'jeremys',
+    password: process.env.DB_PASSWORD || 'report_ps',
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0,
+    enableKeepAlive: true,
+    idleTimeout: 30000,
+    keepAliveInitialDelay: 0
+};
 
-
+// Function to initialize the database connection
+export async function initDb() {
+    const client = await mysql.createConnection(config);
+    return drizzle(client);
 }
-const  createConnectionWithReconnection=async()=> {
-    try {
-        const connection = await mysql.createConnection(config);
-
-        // Listen for connection errors and attempt to reconnect
-        connection.on('error', async (error) => {
-            console.error('Connection error:', error);
-            console.log('Attempting to reconnect...');
-            await createConnectionWithReconnection();
-        });
-
-        return drizzle(connection);
-    } catch (error) {
-        console.error('Failed to connect:', error);
-        console.log('Retrying connection...');
-        await createConnectionWithReconnection();
-    }
-}
-
-// Use the connection for database operations
-
-export const client = await mysql.createConnection(config);
-export const db = await createConnectionWithReconnection();
-
+export const db=await initDb().catch((e)=>{console.log(e)})

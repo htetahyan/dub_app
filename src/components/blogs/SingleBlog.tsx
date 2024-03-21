@@ -8,7 +8,7 @@ const SingleBlog:FC<BLOG> = ({created_at,id,content,title,image,author_id,view_c
     const date = new Date().toDateString();
 
     return (
-        <div className={'flex flex-col gap-2  '}>
+        <div className={'flex flex-col gap-3  '}>
            <div className={'w-full h-[200px] relative overflow-hidden rounded-lg transition-transform hover:scale-105'}>
                <Image src={'https://res.cloudinary.com/di4a4oz3o/image/upload/v1710312918/file_ezmqbd.jpg'} alt={''} objectFit={'cover'}
                       layout={'fill'}
@@ -20,7 +20,7 @@ const SingleBlog:FC<BLOG> = ({created_at,id,content,title,image,author_id,view_c
         </div>
             <div className={'flex    justify-between items-center gap-2'}>
             <h1 className={'text-caption'}>{date}</h1>
-                <Link href={'/blogs/1'} className={'text-primary font-semibold  '}>
+                <Link href={`/blogs/${title}`} className={'text-primary font-semibold  '}>
                     <Button variant={'ghost'} className={'underline text-caption italic'}>
                         Read
                     </Button>

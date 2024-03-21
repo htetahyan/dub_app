@@ -1,19 +1,19 @@
 import {MDXRemote} from 'next-mdx-remote/rsc';
-import {atob} from "node:buffer";
 
 import rehypeHighlight from "rehype-highlight";
 import '~/app/arta.css'
-import {notFound} from "next/navigation";
-import {getBlogByTitle} from "~/service/server.service";
+import {getBlogsBySlug} from "~/service/server.service";
 import Image from "next/image";
 import Linker from "~/components/Linker";
 import {arrow_right_icon} from "~/assets/exporter";
-import React from "react";
+import React, {Suspense} from "react";
 
 import {blurUrl} from "~/utils/utils";
 import BackBtn from "~/components/BackBtn";
-
-
+import Like from "~/components/Like";
+import {id} from "postcss-selector-parser";
+import {tryCatch} from "standard-as-callback/built/utils";
+import {notFound} from "next/navigation";
 
 
 const options = {
@@ -23,15 +23,15 @@ const options = {
             [rehypeHighlight]
         ],
     }} as any
-        const page=async({params}:{params:{title:string}})=>{
-const {file,image,title}=await fetchData(params.title)
+        const page=async({params}:{params:{slug:string}})=>{
+const {file,image,title,id}=await fetchData(params.slug)
 
     return (
         <div className={'w-full  h-fit grid gap-2 p-2 lg:p-4 text-primary'}>
 <BackBtn/>
             <div className={'w-auto grid justify-center rounded-md lg:rounded-2xl overflow-hidden '}>
 
-                <Image src={image!} alt={'sd'}
+                <Image src={image!} alt={title!}
                                               blurDataURL={blurUrl}
                        fetchPriority={'low'}
                        width={4000}
@@ -48,28 +48,41 @@ const {file,image,title}=await fetchData(params.title)
                 <h2 className={' text-caption lg:text-body'}> 1/1/2022 Sun</h2>
                 <h2 className={'lg:text-small '}> HtetAhYan</h2>
             </div>
-          <div className={'flex gap-4 mt-4'}>  <Linker text={'gsap'} url={''} iconPath={arrow_right_icon}/>
-            <Linker text={'Next.js'} url={''} iconPath={arrow_right_icon}/></div>
-            <h1>{params.title}</h1>
+          <div className={'flex  mt-4 items-center justify-between'}><div className={'flex items-center gap-3'}><Linker text={'gsap'} url={''} iconPath={arrow_right_icon}/>
+            <Linker text={'Next.js'} url={''} iconPath={arrow_right_icon}/>
+          </div>
+              <Suspense fallback={<div className={'loader'}/>}>
+              <Like id={id} />
+              </Suspense>
+          </div>
+            <h1>{title}</h1>
             <MDXRemote source={file} options={options}/>
         </div>
     )
         }
 export default page
-const fetchData = async (blogTitle: string) => {
-    try {
-        const {title,content,image,created_at}=await getBlogByTitle(blogTitle)
+const fetchData = async (blogSlug: string) => {
+    'use server'
+try {
+    const { title, content, image, created_at,slug, id } = await getBlogsBySlug(blogSlug);
+    const fetchMDX = async () => {
+        const response = await fetch(`https://raw.githubusercontent.com/htetahyan/HtetAhYan/main/codeblock.mdx`,{
+            headers: {
+                'Accept': 'application/vnd.github.v3.raw',
+                'Authorization': 'token ' + process.env.GITHUB_TOKEN
+            },
+            next:{tags:['github'], revalidate: 3600*24}});
+        return await response.text(); // Decode base64 content
+    };
+    const mdxData = await fetchMDX();
+    return {
+        file: mdxData,
+        image,
+        title,
+        id
+    };
+}catch (e){
+        return notFound()
+}
 
-        const res = await fetch(`https://api.github.com/repos/htetahyan/HtetAhYan/contents/${content}.mdx`);
-
-        const data = await res.json()
-
-        // Decode base64 content
-        // Decode base64 content
-        const file=atob(data.content)
-        return  {file,image,title};
-
-    }catch (error) {
-         notFound()
-    }
- }
+};
