@@ -13,8 +13,10 @@ export const GET = async (request: NextRequest) => {
 
         const {expires_in, access_token,token_type,refresh_token,scope,id_token} = await getGoogleOAuthToken(code as string);
         const google_user=await getGoogleUserInfo(id_token,access_token);
+
 revalidateTag('profile')
     const user=await findExistORCreateUser(google_user.email,google_user.name,google_user.picture) as USER
+        console.log(user)
 cookies().set('access_token',await generateAccessToken(user.id),cookieOptions)
         cookies().set('refresh_token',await generateRefreshToken(user.id),cookieOptions)
 return NextResponse.redirect('http://localhost:3000/')

@@ -37,7 +37,8 @@ export const postFormData = async (url: string, formData: FormData) => {
 
 export const getBlogsBySlug = async (slug: string) => {
     'use server'
-const resBlog=await db!.select().from(blog).where(eq(blog.slug, slug))
+const resBlog=await db?.select().from(blog).where(eq(blog.slug, slug))
+    console.log(slug)
     return resBlog?.[0]! || null
 
 }

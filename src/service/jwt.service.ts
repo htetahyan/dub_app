@@ -1,7 +1,7 @@
 import 'server-only'
 import {ResponseCookie} from "next/dist/compiled/@edge-runtime/cookies";
 import {decodeJwt, jwtVerify, SignJWT} from "jose";
-import {cache} from "react";
+
 
 const ACCESS_TOKEN_LIFE = '5min'; // 1 day
 const REFRESH_TOKEN_LIFE = '30d'; // 30 days

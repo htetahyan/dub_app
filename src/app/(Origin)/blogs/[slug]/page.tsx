@@ -1,4 +1,6 @@
+import "@code-hike/mdx/dist/index.css"
 import {MDXRemote} from 'next-mdx-remote/rsc';
+
 
 import rehypeHighlight from "rehype-highlight";
 import '~/app/arta.css'
@@ -11,11 +13,7 @@ import React, {Suspense} from "react";
 import {blurUrl} from "~/utils/utils";
 import BackBtn from "~/components/BackBtn";
 import Like from "~/components/Like";
-import {id} from "postcss-selector-parser";
-import {tryCatch} from "standard-as-callback/built/utils";
 import {notFound} from "next/navigation";
-
-
 const options = {
     mdxOptions: {
 
@@ -27,15 +25,15 @@ const options = {
 const {file,image,title,id}=await fetchData(params.slug)
 
     return (
-        <div className={'w-full  h-fit grid gap-2 p-2 lg:p-4 text-primary'}>
+        <div className={'w-screen relative   h-fit grid gap-2 p-2 lg:p-4 text-primary'}>
 <BackBtn/>
-            <div className={'w-auto grid justify-center rounded-md lg:rounded-2xl overflow-hidden '}>
+            <div className={'w-screen grid justify-center rounded-md lg:rounded-2xl overflow-hidden '}>
 
                 <Image src={image!} alt={title!}
                                               blurDataURL={blurUrl}
                        fetchPriority={'low'}
-                       width={4000}
-                                                                                              height={1000}
+                       width={400}
+                                                                                              height={100}
                        loading={'lazy'}
                        placeholder={'blur'}
                                                                                               className={'w-full h-full justify-self-center '}/>
@@ -56,7 +54,13 @@ const {file,image,title,id}=await fetchData(params.slug)
               </Suspense>
           </div>
             <h1>{title}</h1>
-            <MDXRemote source={file} options={options}/>
+            <Suspense fallback={<div className={'loader'}/>}>
+
+                <div className="max-w-[90%] flex-wrap whitespace-normal">
+                    <MDXRemote source={file} options={options} />
+                </div>
+            </Suspense>
+
         </div>
     )
         }
@@ -65,16 +69,20 @@ const fetchData = async (blogSlug: string) => {
     'use server'
 try {
     const { title, content, image, created_at,slug, id } = await getBlogsBySlug(blogSlug);
+
     const fetchMDX = async () => {
-        const response = await fetch(`https://raw.githubusercontent.com/htetahyan/HtetAhYan/main/codeblock.mdx`,{
+        const response = await fetch(`https://raw.githubusercontent.com/htetahyan/HtetAhYan/main/${content}.mdx`,{
             headers: {
                 'Accept': 'application/vnd.github.v3.raw',
                 'Authorization': 'token ' + process.env.GITHUB_TOKEN
             },
-            next:{tags:['github'], revalidate: 3600*24}});
+cache:'no-store'
+         });
         return await response.text(); // Decode base64 content
     };
+
     const mdxData = await fetchMDX();
+    console.log(slug)
     return {
         file: mdxData,
         image,
@@ -82,6 +90,7 @@ try {
         id
     };
 }catch (e){
+
         return notFound()
 }
 
