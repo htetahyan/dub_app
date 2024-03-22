@@ -46,12 +46,13 @@ export const verifyToken =  async(token: string) => {
     }
 };
 export const decodeJWTToken = async (token: string) => {
+    if(!token) return
     return decodeJwt(token);
 };
 
 export const extractUserIdFromToken = async (token: string) : Promise<number | undefined> => {
     const payload = await decodeJWTToken(token);
-    return parseInt(<string>payload.sub)
+    return parseInt(<string>payload?.sub)
 }
 
 export const cookieOptions :Partial<ResponseCookie> | undefined = {
@@ -66,6 +67,7 @@ export const cookieOptions :Partial<ResponseCookie> | undefined = {
 export const regenerateToken = async (token: string) => {
 
 const payload = await decodeJWTToken(token)
+    if(!payload) return
     return await new SignJWT({sub: payload.sub})
         .setProtectedHeader({
             alg: "HS256",

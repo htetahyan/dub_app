@@ -107,7 +107,7 @@ export const isUserLiked=async (id:number)=>{
     'use server'
     const cookieStore = cookies()
     const user_id= await extractUserIdFromToken(cookieStore.get('access_token')?.value as string)
-    if(!user_id) return redirect('/login')
+    if(!user_id) return false;
     const res=await  db?.select().from(likes).where(
         and(
             eq(likes.user_id, user_id),
@@ -151,7 +151,7 @@ export const getUserProfile=unstable_cache(async ()=>{
         if(!token) return null
         const user_id=await extractUserIdFromToken(token)
         if(!user_id) return null
-        const res=await db!.select().from(users).where(eq(users.id, user_id))
+        const res=await db?.select().from(users).where(eq(users.id, user_id))
 
         return res?.[0] || null
     }catch (e){
@@ -160,3 +160,12 @@ export const getUserProfile=unstable_cache(async ()=>{
 
 
 },['profile'],{tags:['profile']})
+export const getAuthorProfile=unstable_cache(async (id:number)=>{
+    try {
+
+        const res=await db!.select().from(users).where(eq(users.id, id))
+        return res?.[0] || null
+    }catch (e){
+        console.log(e)
+    }
+},['author'],{tags:['author']})
