@@ -19,8 +19,8 @@ photo: picture
         const result=await db?.insert(users).values(newUser)
         return result![0]
     }
-}catch (e) {
-    throw new Error("Failed to create user")
+}catch (e:any) {
+    throw new Error("Failed to create user"+e.message)
 }
 
 }

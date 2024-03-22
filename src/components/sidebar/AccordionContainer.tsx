@@ -11,7 +11,7 @@ const AccordionContainer = async () => {
             <div className={'flex flex-col h-[calc(100%-10vh)] overflow-y-auto gap-2 '}>
 
 
-                {data?.map((data) => <Accordion id={data.id} title={data.name!}/>)}
+                {data?.map((data) => <Accordion key={data.id} id={data.id} title={data.name!}/>)}
             </div>
         </div>
     );

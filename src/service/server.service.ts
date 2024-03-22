@@ -121,8 +121,6 @@ export const isUserLiked=async (id:number)=>{
 
 export const toggleLike=async (id:number,token:string)=>{
     'use server'
-
-
     const user_id= await extractUserIdFromToken(token)
     if(!user_id) return redirect('/login')
     const isLiked=await isUserLiked(id)

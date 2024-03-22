@@ -5,14 +5,16 @@ import rehypeHighlight from "rehype-highlight";
 import '~/app/arta.css'
 import {getAuthorProfile, getBlogsBySlug} from "~/service/server.service";
 import Image from "next/image";
-import Linker from "~/components/Linker";
-import {arrow_right_icon} from "~/assets/exporter";
+
+
 import React, {Suspense} from "react";
 
 import {blurUrl} from "~/utils/utils";
 import BackBtn from "~/components/BackBtn";
 import Like from "~/components/Like";
 import {notFound} from "next/navigation";
+import {BlurImage} from "~/components/BlurImage";
+
 const options = {
     mdxOptions: {
 
@@ -21,16 +23,16 @@ const options = {
         ],
     }} as any
         const page=async({params}:{params:{slug:string}})=>{
-const {file,image,title,author,id,created_at}=await fetchData(params.slug)
+const {file,image,title,author,id,created_at,techs}=await fetchData(params.slug)
             const date= new Date(created_at!*1000).toDateString()
     return (
         <div className={'w-full relative   h-fit grid gap-2 p-2 lg:p-4 text-primary'}>
 <BackBtn/>
             <div className={'w-full h-[60vh] relative grid justify-center rounded-md lg:rounded-2xl overflow-hidden '}>
 
-                <Image src={image!} alt={title!}
+                <BlurImage src={image!} alt={title!}
                        objectFit={'contain'}
-                                              blurDataURL={blurUrl}
+blurDataURL={image!}
                        fetchPriority={'low'}
                        loading={'lazy'}
                        placeholder={'blur'}
@@ -47,21 +49,17 @@ const {file,image,title,author,id,created_at}=await fetchData(params.slug)
                        loading={'lazy'} placeholder={'blur'}/>
                 <h2 className={'text-caption underline '}> {author?.name}</h2></div>
             </div>
-          <div className={'flex  mt-4 items-center justify-between'}><div className={'flex items-center gap-3'}><Linker text={'gsap'} url={''} iconPath={arrow_right_icon}/>
-            <Linker text={'Next.js'} url={''} iconPath={arrow_right_icon}/>
-          </div>
+          <div className={'flex  mt-4 items-center justify-between'}>
               <Suspense fallback={<div className={'loader'}/>}>
               <Like id={id} />
               </Suspense>
           </div>
             <h1>{title}</h1>
             <Suspense fallback={<div className={'loader'}/>}>
-
-                <div className="max-w-[90%] flex-wrap whitespace-normal">
+                <div className="max-w-[90%] grid gap-2 flex-wrap whitespace-normal">
                     <MDXRemote source={file} options={options} />
                 </div>
             </Suspense>
-
         </div>
     )
         }
@@ -69,7 +67,7 @@ export default page
 const fetchData = async (blogSlug: string) => {
     'use server'
 try {
-    const { title, content, image, created_at,slug, id,author_id } = await getBlogsBySlug(blogSlug);
+    const { title, content, image, created_at,slug, id,author_id,techs } = await getBlogsBySlug(blogSlug);
 
     const fetchMDX = async () => {
         const response = await fetch(`https://raw.githubusercontent.com/htetahyan/HtetAhYan/main/${content}.mdx`,{
@@ -89,6 +87,8 @@ cache:'no-store'
         image,
         title,
         id,
+        techs,
+
         author,created_at
     };
 }catch (e){

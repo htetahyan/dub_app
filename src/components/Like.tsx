@@ -2,7 +2,7 @@
 import React from 'react';
 import Image from "next/image";
 import {like_fill, like_outline_icon} from "~/assets/exporter";
-import {getLikes, isUserLiked, toggleLike} from "~/service/server.service";
+import { isUserLiked, toggleLike} from "~/service/server.service";
 import {Button} from "~/components/Button";
 import {cookies} from "next/headers";
 import {revalidateTag} from "next/cache";
@@ -17,12 +17,13 @@ const fetchLike = async (id: number) => {
 };
 const isEmpty = (obj: {}) => Object.keys(obj).length === 0;
 const Like = async ({id}: { id: number, }) => {
-const likes= await fetchLike(id)
-    const isLiked=await isUserLiked(id)
+
+const [likes,isLiked]=await Promise.all([ fetchLike(id),isUserLiked(id)])
   const source=isLiked?  like_fill:like_outline_icon
     const clickLike = async () => {
         'use server'
         try {
+
         await toggleLike(id, cookies().get('access_token')?.value!)
 revalidateTag('likes')
         }catch (e ){
@@ -34,9 +35,7 @@ revalidateTag('likes')
 action={clickLike}
          >
             <Button type={'submit'} variant={'ghost'} >
-
             <Image src={source} alt={'like'} className={'w-6 h-6'}/>
-
             </Button>
         <p className={'text-small italic'}>{likes}</p>
         </form>

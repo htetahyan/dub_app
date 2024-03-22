@@ -8,7 +8,7 @@ import {getBlogsByTypeId} from "~/service/server.service";
 const Accordion =async ({id,title}: { id: number, title: string }) => {
   const blog= await getBlogsByTypeId(id)
     return (
-        <div>
+        <div className={'max-w-max'}>
             <div
                 className="group flex flex-col gap-2 rounded-lg  p-2 h-fit  "
                 tabIndex={1}
@@ -25,7 +25,7 @@ const Accordion =async ({id,title}: { id: number, title: string }) => {
                 >
                     {blog?.map((blog)=>{
                         return(
-                            <Link href={'/blogs/'+blog.title} key={blog.id} className={'hover:underline'}>{blog.title}</Link>
+                            <Link href={'/blogs/'+blog.slug} key={blog.id} className={'hover:underline'}>{blog.title}</Link>
                         )
                     })}
                 </div>

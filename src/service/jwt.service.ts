@@ -73,5 +73,5 @@ const payload = await decodeJWTToken(token)
             alg: "HS256",
             typ: "JWT",
         })
-        .setExpirationTime(REFRESH_TOKEN_LIFE).sign(generateUnit8Array(process.env.JWT_SECRET!));
+        .setExpirationTime(ACCESS_TOKEN_LIFE).sign(generateUnit8Array(process.env.JWT_SECRET!));
 }
