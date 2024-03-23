@@ -21,7 +21,7 @@ const token= cookies().set('access_token',await generateAccessToken(user.id),coo
         cookies().set('refresh_token',await generateRefreshToken(user.id),cookieOptions)
         revalidateTag('profile')
    console.log(user,token);
-  return NextResponse.json({message: user,token:token}, {status: 200}); 
+  return NextResponse.json({message: user,token: cookies().get('access_token')}, {status: 200}); 
 //return NextResponse.redirect(process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000')
 
     } catch (error) {
