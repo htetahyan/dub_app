@@ -58,10 +58,10 @@ export const extractUserIdFromToken = async (token: string) : Promise<number | u
 export const cookieOptions :Partial<ResponseCookie> | undefined = {
     httpOnly: true,
     sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
+    secure: false,
     maxAge: 60 * 60 * 24 * 30,
     path: "/",
-    domain: process.env.NODE_ENV === "production" ? ".dev-blogs.vercel.app" : 'localhost',
+    domain:'.vercel.app',
 
 }
 export const regenerateToken = async (token: string) => {

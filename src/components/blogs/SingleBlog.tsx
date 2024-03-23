@@ -1,7 +1,6 @@
 import React, {FC} from 'react';
 import Image from "next/image";
 import Link from "next/link";
-import {Button} from "~/components/Button";
 import {BLOG} from "~/db/schema/schema";
 
 const SingleBlog:FC<BLOG> = ({created_at,id,content,techs,title,image,author_id,view_count,slug}) => {
