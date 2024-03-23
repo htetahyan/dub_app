@@ -1,7 +1,6 @@
+import dynamic from 'next/dynamic';
 import React from 'react';
-
-
-import ShowCase from "~/components/blogs/ShowCase";
+const ShowCase=dynamic(()=>import('../../components/blogs/ShowCase'))
 
 const Page = async () => {
 
@@ -29,4 +28,4 @@ const Page = async () => {
 };
 
 export default Page;
-const Paths = ['/', '/blog', '/about', '/contact', '/projects']
+
