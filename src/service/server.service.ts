@@ -8,7 +8,7 @@ import {cache} from "react";
 import {extractUserIdFromToken} from "~/service/jwt.service";
 import {cookies} from "next/headers";
 import {redirect} from "next/navigation";
-import {revalidateTag, unstable_cache} from "next/cache";
+import { unstable_cache} from "next/cache";
 
 
 const cacheManager = new CacheHandler();

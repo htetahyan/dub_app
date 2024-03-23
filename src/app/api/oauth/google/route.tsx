@@ -15,14 +15,14 @@ export const GET = async (request: NextRequest) => {
         const google_user=await getGoogleUserInfo(id_token,access_token);
 
     const user=await findExistORCreateUser(google_user.email,google_user.name,google_user.picture) as USER
-     
+    revalidateTag('profile')
 cookies().set('access_token',await generateAccessToken(user.id),cookieOptions);
 
         cookies().set('refresh_token',await generateRefreshToken(user.id),cookieOptions)
-        revalidateTag('profile')
+     
   
-  return NextResponse.json({message: user,token: cookies().get('access_token')}, {status: 200}); 
-//return NextResponse.redirect(process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000')
+
+return NextResponse.redirect(process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000')
 
     } catch (error) {
 

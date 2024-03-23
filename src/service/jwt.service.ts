@@ -62,7 +62,6 @@ export const cookieOptions :Partial<ResponseCookie> | undefined = {
     maxAge: 60 * 60 * 24 * 30,
     path: "/",
 
-
 }
 export const regenerateToken = async (token: string) => {
 
