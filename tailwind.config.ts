@@ -15,6 +15,7 @@ const config: Config = {
       colors: {
         link: "#0070f3", // link
         primary: "#0e1129",
+        light: "#f8f8f8",
       },
       backgroundColor: {
         primary: "#F9F9F9",

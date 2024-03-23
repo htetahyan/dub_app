@@ -14,6 +14,8 @@ import BackBtn from "~/components/BackBtn";
 import Like from "~/components/Like";
 import {notFound} from "next/navigation";
 import {BlurImage} from "~/components/BlurImage";
+import {Metadata} from "next";
+import MetaTag, {keywords} from "~/utils/MetaTag";
 
 const options = {
     mdxOptions: {
@@ -26,7 +28,7 @@ const options = {
 const {file,image,title,author,id,created_at,techs}=await fetchData(params.slug)
             const date= new Date(created_at!*1000).toDateString()
     return (
-        <div className={'w-full relative   h-fit grid gap-2 p-2 lg:p-4 text-primary'}>
+        <div className={'w-full relative  justify-center  h-fit grid gap-2 md:p-2 lg:p-4 text-primary'}>
 <BackBtn/>
             <div className={'w-full h-[60vh] relative grid justify-center rounded-md lg:rounded-2xl overflow-hidden '}>
 
@@ -36,28 +38,28 @@ blurDataURL={image!}
                        fetchPriority={'low'}
                        loading={'lazy'}
                        placeholder={'blur'}
-                       layout={'fill'}
-                                                                                              className={'w-full h-full justify-self-center '}/>
+                       layout={'fill'} className={'w-full h-full justify-self-center '}/>
             </div>
-
-                  <h1 className={'text-subheading lg:text-heading text-primary mt-2 '}>{title}</h1>
             <div className={'flex items-center px-2 mt-3 w-full justify-between  '}>
-                <h2 className={' text-caption lg:text-body'}> {date}</h2>
-           <div className={'flex items-center gap-3'}>    <Image src={author?.photo!} alt={'author'}
+                <h2 className={' text-small lg:text-body'}> {date}</h2>
+           <div className={'flex items-center gap-3'}>
+               <div className={'w-10 h-10 relative'}><Image src={author?.photo!} alt={'author'}
                        blurDataURL={blurUrl}
-                       width={50} height={50} className={'rounded-full'}
+                                                                 objectFit={'cover'}
+                     layout={'fill'} className={'rounded-full'}
                        loading={'lazy'} placeholder={'blur'}/>
-                <h2 className={'text-caption underline '}> {author?.name}</h2></div>
+               </div>
+                <h2 className={' text-small lg:text-caption underline '}> {author?.name}</h2></div>
             </div>
           <div className={'flex  mt-4 items-center justify-between'}>
               <Suspense fallback={<div className={'loader'}/>}>
               <Like id={id} />
               </Suspense>
           </div>
-            <h1>{title}</h1>
             <Suspense fallback={<div className={'loader'}/>}>
-                <div className="max-w-[90%] grid gap-2 flex-wrap whitespace-normal">
+                <div className="w-[95%] md:w-[90%] justify-self-center grid gap-2 flex-wrap whitespace-normal">
                     <MDXRemote source={file} options={options} />
+                    <div className={'h-0.5 w-full bg-gray-600'}/>
                 </div>
             </Suspense>
         </div>
@@ -75,7 +77,7 @@ try {
                 'Accept': 'application/vnd.github.v3.raw',
                 'Authorization': 'token ' + process.env.GITHUB_TOKEN
             },
-cache:'no-store'
+next: {revalidate: 3600},
          });
         return await response.text(); // Decode base64 content
     };
@@ -97,3 +99,8 @@ cache:'no-store'
 }
 
 };
+export const generateMetadata = async ({params}: { params: { slug: string } }) :Promise<Metadata>=> {
+    const {title,image} = await fetchData(params.slug);
+   return await MetaTag(title!,'Read More ...',image!,params.slug)
+
+}

@@ -19,10 +19,10 @@ const date= new Date(created_at!*1000).toDateString()
         </div>
             <div className={'flex    justify-between items-center gap-2'}>
             <h1 className={'text-caption'}>{date}</h1>
-                <Link href={`/blogs/${slug}`} className={'text-primary font-semibold  '}>
-                    <Button variant={'ghost'} className={'underline text-caption italic'}>
+                <Link href={`/blogs/${slug}`} className={' font-semibold  '}>
+                    <h1 className={'text-emerald-800 underline text-caption italic'}>
                         Read
-                    </Button>
+                    </h1>
                 </Link>
             </div>
         </div>

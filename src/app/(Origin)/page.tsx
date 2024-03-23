@@ -9,7 +9,7 @@ const Page = async () => {
         <div className={'grid  h-full p-4 '}>
 
             <div className={'w-full flex flex-col  h-fit py-10 justify-around items-center'}>
-                <h1 className={'text-heading text-primary leading-normal'}>Welcome to EDUSN.
+                <h1 className={' text-subheading lg:text-heading text-primary leading-normal'}>Welcome to EDUSN.
 
            A space where I share my knowledge and passion for technology.
                 </h1>
@@ -21,6 +21,7 @@ const Page = async () => {
 
        </div>
             </div>              <ShowCase/>
+            <div className={'h-0.5 w-full bg-gray-600'}/>
 
 
         </div>

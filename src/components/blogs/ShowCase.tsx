@@ -21,7 +21,7 @@ const ShowCase = () => {
         setLastLoadedIndex(size);
     }
     return (
-        <div id={'showcase'} className={'grid grid-cols-1 md:grid-cols-2 md:gap-3 lg:grid-cols-3 lg:gap-4 w-full mt-3 py-2'}>
+        <div id={'showcase'} className={'grid grid-cols-1 items-center md:grid-cols-2 md:gap-3 lg:grid-cols-3 lg:gap-4 w-full mt-3 py-2'}>
             {data?.map((pageData, i) => (
                 pageData.map((blog: BLOG
                 ) => (

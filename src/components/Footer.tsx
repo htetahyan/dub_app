@@ -5,8 +5,8 @@ const Footer = () => {
     return (
         <footer className="bg-white w-full p-6">
             <div className="container mx-auto">
-                <div className="flex flex-wrap justify-between  ">
-                    <div className="w-full md:w-1/3">
+                <div className="flex items-center justify-between  ">
+                    <div className="hidden md:block w-full md:w-1/3">
                         <h3 className="text-lg font-semibold">About</h3>
                         <p className="mt-2">EDUSN, a space where I share my knowledge and passion for technology.</p>
                     </div>

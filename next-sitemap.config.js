@@ -7,7 +7,7 @@ module.exports = {
     priority: 0.7,
     changefreq: 'daily',
 
-    autoLastmod: true,sitemapSize: 7000,
+    autoLastmod: true,sitemapSize: 1000,
     robotsTxtOptions: {
         policies: [
             {

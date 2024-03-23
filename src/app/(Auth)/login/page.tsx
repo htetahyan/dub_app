@@ -15,7 +15,8 @@ await checkUser();
             <div className="bg-white shadow-lg rounded-lg px-12 pt-8 pb-12 mb-8 flex flex-col">
                 <div className=" grid gap-2">
 
-                    <h1 className="text-subheading font-extrabold text-center">Please sign in to continue</h1>
+                    <h1 className="text-subheading font-extrabold text-center">Please sign in to continue
+                    </h1>
                 </div>
                 <div className="flex justify-center">
 

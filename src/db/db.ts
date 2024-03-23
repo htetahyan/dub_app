@@ -14,14 +14,11 @@ const config = {
     waitForConnections: true,
     connectionLimit: 10,
     queueLimit: 0,
-    enableKeepAlive: true,
-    idleTimeout: 30000,
-    keepAliveInitialDelay: 0
 };
 
 // Function to initialize the database connection
 export async function initDb() {
-    const client = await mysql.createConnection(config);
+    const client = mysql.createPool(config);
     return drizzle(client);
 }
 export const db=await initDb().catch((e)=>{console.log(e)})
