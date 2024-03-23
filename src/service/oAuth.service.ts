@@ -34,11 +34,11 @@ export const getGoogleOAuthToken = async (code: string): Promise<GoogleOAuthToke
 
 
         if (!res.ok) {
-            throw new Error(`Failed to get Google OAuth token: ${res.status} ${res.body}`);
+            throw new Error(`Failed to get Google OAuth token: ${res.status} ${res.body?.getReader }`);
         }
         return await res.json();
-    } catch (error) {
-        console.error(error);
+    } catch (error ) {
+        console.error(error.message);
         throw error;
     }
 };
