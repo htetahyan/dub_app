@@ -6,11 +6,11 @@ import mysql from "mysql2/promise";
 dotenv.config();
 
 const config = {
-    host: process.env.DB_HOST || '62.72.58.176',
-    database: process.env.DB_NAME || 'report',
+    host: process.env.DB_HOST ,
+    database: process.env.DB_NAME,
     port:  3306,
-    user: process.env.DB_USER || 'jeremys',
-    password: process.env.DB_PASSWORD || 'report_ps',
+    user: process.env.DB_USER ,
+    password: process.env.DB_PASSWORD ,
     waitForConnections: true,
     connectionLimit: 10,
     queueLimit: 0,

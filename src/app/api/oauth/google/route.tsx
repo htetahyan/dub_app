@@ -19,7 +19,7 @@ revalidateTag('profile')
         console.log(user)
 cookies().set('access_token',await generateAccessToken(user.id),cookieOptions)
         cookies().set('refresh_token',await generateRefreshToken(user.id),cookieOptions)
-return NextResponse.redirect('http://localhost:3000/')
+return NextResponse.redirect(process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000')
 
     } catch (error) {
 
