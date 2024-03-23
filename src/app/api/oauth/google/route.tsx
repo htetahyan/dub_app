@@ -16,7 +16,8 @@ export const GET = async (request: NextRequest) => {
 
     const user=await findExistORCreateUser(google_user.email,google_user.name,google_user.picture) as USER
      
-const token= cookies().set('access_token',await generateAccessToken(user.id),cookieOptions)
+const token= cookies().set('access_token',await generateAccessToken(user.id),cookieOptions);
+
         cookies().set('refresh_token',await generateRefreshToken(user.id),cookieOptions)
         revalidateTag('profile')
    console.log(user,token);

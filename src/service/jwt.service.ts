@@ -58,7 +58,7 @@ export const extractUserIdFromToken = async (token: string) : Promise<number | u
 export const cookieOptions :Partial<ResponseCookie> | undefined = {
     httpOnly: true,
     sameSite: "lax",
-    secure: false,
+    secure: true,
     maxAge: 60 * 60 * 24 * 30,
     path: "/",
     domain:'.vercel.app',
