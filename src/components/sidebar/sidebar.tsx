@@ -1,3 +1,4 @@
+import { cookies } from 'next/headers';
 import React from 'react';
 import Header from "~/components/Header";
 
@@ -7,7 +8,7 @@ import {getUserProfile} from "~/service/server.service";
 
 const Sidebar = async ({children}: { children: React.ReactNode }) => {
 
-const userData=await getUserProfile()
+const userData=await getUserProfile(cookies().get('access_token')?.value!)
     return (
         <div>
             <Header user={userData!}/>
