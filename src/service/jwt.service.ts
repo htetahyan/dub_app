@@ -61,7 +61,7 @@ export const cookieOptions :Partial<ResponseCookie> | undefined = {
     secure: true,
     maxAge: 60 * 60 * 24 * 30,
     path: "/",
-    domain:'.vercel.app',
+
 
 }
 export const regenerateToken = async (token: string) => {

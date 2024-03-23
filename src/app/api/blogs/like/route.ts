@@ -2,19 +2,7 @@ import {NextRequest, NextResponse} from "next/server";
 import {getLikes, toggleLike} from "~/service/server.service";
 
 
-export const POST = async (req: NextRequest) => {
-    const token=await req.headers.get('Authorization') as string
-try {
-    const token=req.headers.get('Authorization') as string
-const id=req.nextUrl.searchParams.get('id')!
-   await toggleLike(parseInt(id),token!)
 
-    return NextResponse.json({message: 'success'}, {status: 200})
-}catch (error:any) {
-    return NextResponse.json({error: error.message}, {status: 400})
-}
-
-}
 export const GET = async (req: NextRequest) => {
 
     try {
