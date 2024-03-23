@@ -30,7 +30,7 @@ const {file,image,title,author,id,created_at,techs}=await fetchData(params.slug)
     return (
         <div className={'w-full relative  justify-center  h-fit grid gap-2 md:p-2 lg:p-4 text-primary'}>
 <BackBtn/>
-<Suspense fallback={<div>Loading</div>}>
+
             <div className={'w-full h-[60vh] relative grid justify-center rounded-md lg:rounded-2xl overflow-hidden '}>
 
                 <BlurImage src={image!} alt={title!}
@@ -63,7 +63,7 @@ blurDataURL={image!}
                     <div className={'h-0.5 w-full bg-gray-600'}/>
                 </div>
             </Suspense>
-            </Suspense>
+         
         </div>
     )
         }

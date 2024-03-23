@@ -25,7 +25,7 @@ const Accordion =async ({id,title}: { id: number, title: string }) => {
                 >
                     {blog?.map((blog)=>{
                         return(
-                            <Link href={'/blogs/'+blog.slug} key={blog.id} className={'hover:underline'}>{blog.title}</Link>
+                            <Link href={'/blogs/'+blog.slug} key={blog.id} prefetch className={'hover:underline'}>{blog.title}</Link>
                         )
                     })}
                 </div>
