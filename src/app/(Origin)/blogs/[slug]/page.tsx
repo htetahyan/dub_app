@@ -1,14 +1,9 @@
 import {MDXRemote} from 'next-mdx-remote/rsc';
-
-
 import rehypeHighlight from "rehype-highlight";
 import '~/app/arta.css'
 import {getAuthorProfile, getBlogsBySlug} from "~/service/server.service";
 import Image from "next/image";
-
-
 import React, {Suspense} from "react";
-
 import {blurUrl} from "~/utils/utils";
 import BackBtn from "~/components/BackBtn";
 import Like from "~/components/Like";
@@ -33,7 +28,7 @@ const {file,image,title,author,id,created_at,techs}=await fetchData(params.slug)
 
             <div className={'w-full h-[60vh] relative grid justify-center rounded-md lg:rounded-2xl overflow-hidden '}>
 
-                <BlurImage src={image!} alt={title!}
+                <BlurImage src={image!} alt={title! || ' image'}
                        objectFit={'contain'}
 blurDataURL={image!}
                        fetchPriority={'low'}

@@ -25,6 +25,6 @@ export default async function sitemap({
 const getAllBlogs= cache(async ()=>{
 
 const blogs= await db?.execute(getDateAndSlugFromBlog()) as any
- 
+
     return blogs?.[0]
 })
