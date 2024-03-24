@@ -1,6 +1,6 @@
 const siteConfig = {
     title: 'Blogs by HtetAhYan',
-    tagline: 'a tech Blogs web site',
+    tagline: 'Welcome to my tech Blogs website',
     url: process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000',
     baseUrl: '/',
     onBrokenLinks: 'throw',
