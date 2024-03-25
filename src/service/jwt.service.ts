@@ -46,7 +46,8 @@ export const verifyToken =  async(token: string) => {
     }
 };
 export const decodeJWTToken = async (token: string) => {
-    if(!token) return
+    if(!token) return;
+
     return decodeJwt(token);
 };
 
@@ -55,13 +56,16 @@ export const extractUserIdFromToken = async (token: string) : Promise<number | u
     return parseInt(<string>payload?.sub)
 }
 
-export const cookieOptions :Partial<ResponseCookie> | undefined = {
-    httpOnly: true,
-    sameSite: "lax",
-    secure: true,
-    maxAge: 60 * 60 * 24 * 30,
-    path: "/",
+export const cookieOptions=(age:number):Partial<ResponseCookie> | undefined =>  {
+    return {
+        httpOnly: true,
+        sameSite: "lax",
+        secure: true,
+        maxAge: 60 * 60 * 24 ,
 
+
+        path: "/",
+    }
 }
 export const regenerateToken = async (token: string) => {
 

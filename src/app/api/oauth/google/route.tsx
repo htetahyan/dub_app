@@ -16,15 +16,13 @@ export const GET = async (request: NextRequest) => {
 
     const user=await findExistORCreateUser(google_user.email,google_user.name,google_user.picture) as USER
 
-cookies().set('access_token',await generateAccessToken(user.id),cookieOptions);
+ cookies().set('access_token',await generateAccessToken(user.id),cookieOptions(10));
 
-        cookies().set('refresh_token',await generateRefreshToken(user.id),cookieOptions)
 
         revalidateTag('profile')
 
-return NextResponse.redirect(process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000')
-
-    } catch (error) {
+return NextResponse.redirect(process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000')}
+    catch (error) {
 
         // @ts-ignore
         return NextResponse.json({message: error.message}, {status: 500});

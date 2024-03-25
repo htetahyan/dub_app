@@ -4,9 +4,11 @@ import Header from "~/components/Header";
 
 import AccordionContainer from "~/components/sidebar/AccordionContainer";
 import {getUserProfile} from "~/service/server.service";
+import {regenerateToken, verifyToken} from "~/service/jwt.service";
 
 
 const Sidebar = async ({children}: { children: React.ReactNode }) => {
+
 
 const userData=await getUserProfile(cookies().get('access_token')?.value!)
     return (

@@ -7,21 +7,22 @@ import {eq} from "drizzle-orm/sql/expressions/conditions";
 
 export const findExistORCreateUser = async (email: string,name: string,picture:string):Promise<NewUser> => {
 try {
-    const user=await db?.select().from(users).where(eq(users.email, email))
-    if (user!.length > 0) {
-        return user![0]
-    } else {
-        const newUser:NewUser={
-            email,
-            name,
-photo: picture
-        }
+    const res = await db?.select().from(users).where(eq(users.email, email))
+if(res!.length>0){
+    return res![0]
+}else{
+const user: NewUser = {
+    email,
+    name,
+    photo: picture
+}
+await db?.insert(users).values(user)
+ return await findExistORCreateUser(email,name,picture)
 
-     
-        return await findExistORCreateUser(email,name,picture)
-    }
-}catch (e:any) {
-    throw new Error("Failed to create user"+e.message)
+}}
+catch (e:any) {
+    throw new Error("Failed to "+e.message)
+    
 }
 
 }
@@ -47,14 +48,3 @@ try {
     throw new Error("Failed to delete session")
 }}
 
-interface InsertResult {
-
-    fieldCount: number,
-        affectedRows: number,
-        insertId: number,
-        info: string,
-        serverStatus: number,
-        warningStatus: number,
-        changedRows: number
-
-}

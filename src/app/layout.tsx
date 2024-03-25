@@ -20,7 +20,9 @@ export default function RootLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <html lang="en" suppressHydrationWarning className={`${NeueMontrealRegular.variable}`}>
+        <html lang="en" suppressHydrationWarning
+
+              className={`${NeueMontrealRegular.variable}`}>
         <body className={'font-primary text-primary'} >
         {children}
         </body>

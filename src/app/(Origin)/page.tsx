@@ -5,10 +5,11 @@ const Page = async () => {
     return (
         <div className={'grid  h-full p-4 '}>
 
-            <div className={'w-full flex flex-col  h-fit py-10 justify-around items-center'}>
+            <div className={'w-full flex flex-col gap-2  py-10 justify-center items-center '}>
                 <h1 className={' text-subheading lg:text-heading text-primary '}>
                     Welcome to My Blog site.
-                </h1><h2 className={'text-subheading lg:text-heading text-primary'}>           A space where I share my knowledge and passion for technology.
+                </h1>
+                <h2 className={'text-body lg:text-subheading text-primary '}>           A space where I share my knowledge and passion for technology.
             </h2>
 
             </div>
