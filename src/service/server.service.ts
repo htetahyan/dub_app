@@ -143,7 +143,7 @@ export const getLikes=unstable_cache(async (id:number)=> {
     ) as any
        },['likes'],{tags:['likes']}
 )
-export const getUserProfile=async (token:string)=>{
+export const getUserProfile=unstable_cache(async (token:string)=>{
     try {
 
         if(!token) return null
@@ -157,7 +157,7 @@ export const getUserProfile=async (token:string)=>{
     }
 
 
-}
+},['profile'],{tags:['profile']})
 export const getAuthorProfile=unstable_cache(async (id:number)=>{
     try {
 

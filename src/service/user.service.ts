@@ -16,8 +16,12 @@ try {
             name,
 photo: picture
         }
-        const result=await db?.insert(users).values(newUser)
-        return result![0]
+        const result =await db?.insert(users).values(newUser) as unknown as InsertResult
+
+        const user=await db?.select().from(users).where(eq(users.id, result.ResultSetHeader.insertId))
+        console.log(result)
+        console.log(user)
+        return user?[0]:null
     }
 }catch (e:any) {
     throw new Error("Failed to create user"+e.message)
@@ -45,3 +49,16 @@ try {
 }catch (e) {
     throw new Error("Failed to delete session")
 }}
+
+interface InsertResult {
+
+    ResultSetHeader :{
+    fieldCount: number,
+        affectedRows: number,
+        insertId: number,
+        info: string,
+        serverStatus: number,
+        warningStatus: number,
+        changedRows: number
+},
+}
