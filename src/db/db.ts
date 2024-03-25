@@ -2,7 +2,7 @@ import { drizzle } from "drizzle-orm/mysql2";
 import dotenv from "dotenv";
 import * as schema from './schema/schema';
 import mysql from "mysql2/promise";
-import fs from "fs";
+import * as fs from "fs";
 
 dotenv.config();
 
@@ -15,9 +15,11 @@ const config = {
     waitForConnections: true,
     connectionLimit: 20,
     queueLimit: 0,
+    
     ssl:{
-        rejectUnauthorized: false
-        ,ca: fs.readFileSync('../assets/ca.pem')
+        rejectUnauthorized: false,
+      
+
     }
 };
 
