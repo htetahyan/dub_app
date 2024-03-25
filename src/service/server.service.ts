@@ -143,21 +143,21 @@ export const getLikes=unstable_cache(async (id:number)=> {
     ) as any
        },['likes'],{tags:['likes']}
 )
-export const getUserProfile=unstable_cache(async (token:string)=>{
+export const getUserProfile=async (token:string)=>{
     try {
-     
+
         if(!token) return null
         const user_id=await extractUserIdFromToken(token)
         if(!user_id) return null
         const res=await db?.select().from(users).where(eq(users.id, user_id))
-
+        console.log(res)
         return res?.[0] || null
     }catch (e){
         console.log(e)
     }
 
 
-},['profile'],{tags:['profile']})
+}
 export const getAuthorProfile=unstable_cache(async (id:number)=>{
     try {
 
