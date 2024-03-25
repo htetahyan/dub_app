@@ -18,7 +18,7 @@ photo: picture
         }
         const result =await db?.insert(users).values(newUser) as unknown as InsertResult
 
-        const user=await db?.select().from(users).where(eq(users.id, result.ResultSetHeader.insertId))
+        const user=await db?.select().from(users).where(eq(users.id, result.insertId))
         console.log(result)
         console.log(user)
         return user?[0]:null
@@ -52,7 +52,6 @@ try {
 
 interface InsertResult {
 
-    ResultSetHeader :{
     fieldCount: number,
         affectedRows: number,
         insertId: number,
@@ -60,5 +59,5 @@ interface InsertResult {
         serverStatus: number,
         warningStatus: number,
         changedRows: number
-},
+
 }
