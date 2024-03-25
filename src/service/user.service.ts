@@ -5,7 +5,7 @@ import {eq} from "drizzle-orm/sql/expressions/conditions";
 
 
 
-export const findExistORCreateUser = async (email: string,name: string,picture:string) => {
+export const findExistORCreateUser = async (email: string,name: string,picture:string):Promise<NewUser> => {
 try {
     const user=await db?.select().from(users).where(eq(users.email, email))
     if (user!.length > 0) {
@@ -16,12 +16,9 @@ try {
             name,
 photo: picture
         }
-        const result =await db?.insert(users).values(newUser) as unknown as InsertResult
 
-        const user=await db?.select().from(users).where(eq(users.id, result.insertId))
-        console.log(result)
-        console.log(user)
-        return user?[0]:null
+     
+        return await findExistORCreateUser(email,name,picture)
     }
 }catch (e:any) {
     throw new Error("Failed to create user"+e.message)
