@@ -23,9 +23,11 @@ const config = {
     }
 };
 
-// Function to initialize the database connection
 export async function initDb() {
-    const client = mysql.createPool(config);
-    return drizzle(client);
+
+        const client = mysql.createPool(config);
+        return drizzle(client);
+
+
 }
-export const db=await initDb().catch((e)=>{console.log(e)})
+export const db=await initDb().catch((e)=>{throw new Error('s')})

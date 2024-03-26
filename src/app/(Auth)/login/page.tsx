@@ -1,19 +1,22 @@
 import React from 'react';
-import { google_icon } from "~/assets/exporter";
+import {google_icon, icon} from "~/assets/exporter";
 import Image from "next/image";
 import {getGoogleOAuthURL} from "~/utils/getOAuthURL";
 import {Button} from "~/components/Button";
 import {verifyToken} from "~/service/jwt.service";
 import {cookies} from "next/headers";
 import {redirect} from "next/navigation";
-
+import {BlurImage} from "~/components/BlurImage";
+import metaTag from "~/utils/MetaTag";
+export const metadata = await metaTag('Login ','login to continue ...',google_icon,'login')
 const Login = async () => {
 
 await checkUser();
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-100">
             <div className="bg-white shadow-lg rounded-lg px-12 pt-8 pb-12 mb-8 flex flex-col">
-                <div className=" grid gap-2">
+                <div className=" flex flex-col items-center">
+                    <BlurImage src={icon} alt={'icon'} className="w-16 h-16 " loading={'lazy'}/>
 
                     <h1 className="text-subheading font-extrabold text-center">Please sign in to continue
                     </h1>

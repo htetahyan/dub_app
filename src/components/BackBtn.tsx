@@ -10,10 +10,7 @@ import {useRouter} from "next/navigation";
 const BackBtn = () => {
     const router = useRouter();
     return (
-
-        <Button onClick={()=> router.back()} className={'items-start w-fit'} variant={'link'}>Back</Button>
-
-
+        <Button onClick={()=> router.back()} className={'items-start w-fit mt-2 text-teal-400 border-teal-400'} variant={'link'}>Back</Button>
     );
 };
 

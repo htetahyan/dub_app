@@ -122,7 +122,8 @@ export const isUserLiked=async (id:number)=>{
 export const toggleLike=async (id:number,token:string)=>{
     'use server'
     const user_id= await extractUserIdFromToken(token)
-    if(!user_id) return redirect('/login')
+    if(!user_id)  redirect('/login')
+    console.log(user_id)
     const isLiked=await isUserLiked(id)
     if (isLiked){
          await db?.delete(likes).where(
@@ -150,7 +151,7 @@ export const getUserProfile=unstable_cache(async (token:string)=>{
         const user_id=await extractUserIdFromToken(token)
         if(!user_id) return null
         const res=await db?.select().from(users).where(eq(users.id, user_id))
-        console.log(res)
+
         return res?.[0] || null
     }catch (e){
         console.log(e)

@@ -53,7 +53,7 @@ export const decodeJWTToken = async (token: string) => {
 
 export const extractUserIdFromToken = async (token: string) : Promise<number | undefined> => {
     const payload = await decodeJWTToken(token);
-    return parseInt(<string>payload?.sub)
+    return payload?.sub && parseInt(<string>payload?.sub) || undefined
 }
 
 export const cookieOptions=(age:number):Partial<ResponseCookie> | undefined =>  {

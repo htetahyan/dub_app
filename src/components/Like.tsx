@@ -1,5 +1,7 @@
 
 import React from 'react';
+import { isRedirectError } from "next/dist/client/components/redirect";
+
 import Image from "next/image";
 import {like_fill, like_outline_icon} from "~/assets/exporter";
 import { isUserLiked, toggleLike} from "~/service/server.service";
@@ -23,11 +25,16 @@ const [likes,isLiked]=await Promise.all([ fetchLike(id),isUserLiked(id)])
     const clickLike = async () => {
         'use server'
         try {
-
-        await toggleLike(id, cookies().get('access_token')?.value!)
+const token=cookies().get('access_token')?.value!
+        if(!token)  redirect('/login')
+        await toggleLike(id, token)
 revalidateTag('likes')
-        }catch (e ){
-            redirect('/login')
+        }catch (e:any){
+
+
+            if (isRedirectError(e)) {
+                throw e;
+            }
         }
     }
     return (

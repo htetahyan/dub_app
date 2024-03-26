@@ -9,7 +9,7 @@ const Page = async () => {
                 <h1 className={' text-subheading lg:text-heading text-primary '}>
                     Welcome to My Blog site.
                 </h1>
-                <h2 className={'text-body lg:text-subheading text-primary '}>           A space where I share my knowledge and passion for technology.
+                <h2 className={'text-body lg:text-subheading text-center text-primary '}>           A space where I share my knowledge and passion for technology.
             </h2>
 
             </div>
