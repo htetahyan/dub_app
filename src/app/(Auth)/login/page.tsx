@@ -13,19 +13,19 @@ const Login = async () => {
 
 await checkUser();
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-100">
+        <div className="min-h-screen flex items-center justify-center bg-gray-100 text-black">
             <div className="bg-white shadow-lg rounded-lg px-12 pt-8 pb-12 mb-8 flex flex-col">
                 <div className=" flex flex-col items-center">
                     <BlurImage src={icon} alt={'icon'} className="w-16 h-16 " loading={'lazy'}/>
 
-                    <h1 className="text-subheading font-extrabold text-center">Please sign in to continue
+                    <h1 className="text-subheading font-extrabold text-center ">Please sign in to continue
                     </h1>
                 </div>
                 <div className="flex justify-center">
 
                 </div>
                 <div className="flex justify-center mt-8">
-                    <Button variant={'border'} onClick={getGoogleOAuthURL} className=" font-bold flex items-center text-caption rounded-lg">
+                    <Button variant={'border'} onClick={getGoogleOAuthURL} className=" font-bold flex items-center text-caption text-black rounded-lg">
                         <Image src={google_icon} alt="Google Sign In" className="w-12 h-12" />
                         Sign in with Google
                     </Button>
