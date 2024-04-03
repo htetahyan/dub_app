@@ -87,7 +87,7 @@ next: {revalidate: 3600},
         title,
         id,
         techs,
-
+slug,
         author,created_at
     };
 }catch (e){
@@ -97,7 +97,42 @@ next: {revalidate: 3600},
 
 };
 export const generateMetadata = async ({params}: { params: { slug: string } }) :Promise<Metadata>=> {
-    const {title,image} = await fetchData(params.slug);
-   return await MetaTag(title!,'Read More ...',image!,params.slug)
+    const {title,image,slug} = await fetchData(params.slug);
+
+   return  {
+       title: title,
+       description: title,
+       generator: 'Next.js',
+       keywords: [...keywords, title || '',title?.split(' ').join('-') || ''],
+   twitter: {
+       card: 'summary',
+       title: title!,
+       description: 'read more on website',
+       images: [
+           {url: image!,
+               width: 800,
+               height: 600}
+       ],
+       creator: 'Htet Ah Yan',
+
+   },
+
+       robots: {
+           index: true,
+           follow: true,
+       },
+       openGraph: {
+
+           title: title!,
+           description: 'read more on website',
+           images: [
+               {url: image!,
+                   width: 800,
+                   height: 600}
+           ],
+        url:`${process.env.NEXT_PUBLIC_BASE_URL}/blogs/${slug}`,
+       }
+,
+   }
 
 }

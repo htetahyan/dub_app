@@ -1,5 +1,5 @@
 import {getGoogleOAuthToken, getGoogleUserInfo} from "~/service/oAuth.service";
-import {createSession, findExistORCreateUser} from "~/service/user.service";
+import { findExistORCreateUser} from "~/service/user.service";
 
 import {NextRequest, NextResponse} from "next/server";
 import {cookies} from "next/headers";

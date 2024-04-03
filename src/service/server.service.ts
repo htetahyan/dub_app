@@ -30,15 +30,13 @@ export const postFormData = async (url: string, formData: FormData) => {
         const data = await response.json();
         return data;
     } catch (error) {
-        console.error('Failed to parse JSON:', error);
-        // Handle the error appropriately, e.g., return a default value or rethrow the error
+throw new Error('An error occurred while fetching the data.')       // Handle the error appropriately, e.g., return a default value or rethrow the error
     }
 };
 
 export const getBlogsBySlug = async (slug: string) => {
     'use server'
 const resBlog=await db?.select().from(blog).where(eq(blog.slug, slug))
-    console.log(slug)
     return resBlog?.[0]! || null
 
 }
@@ -75,7 +73,6 @@ export const getTypes = async (): Promise<TYPE[]> => {
             await cacheManager.set(key, resBlog, { tags: ['types'] });
             return await getTypes()
         } catch (error) {
-            console.error('Error fetching types:', error);
             throw error;
         }
     }
@@ -123,7 +120,6 @@ export const toggleLike=async (id:number,token:string)=>{
     'use server'
     const user_id= await extractUserIdFromToken(token)
     if(!user_id)  redirect('/login')
-    console.log(user_id)
     const isLiked=await isUserLiked(id)
     if (isLiked){
          await db?.delete(likes).where(

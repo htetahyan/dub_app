@@ -8,7 +8,6 @@ import {cookies} from "next/headers";
 import {redirect} from "next/navigation";
 import {BlurImage} from "~/components/BlurImage";
 import metaTag from "~/utils/MetaTag";
-export const metadata = await metaTag('Login ','login to continue ...',google_icon,'login')
 const Login = async () => {
 
 await checkUser();

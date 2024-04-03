@@ -1,12 +1,12 @@
 import siteConfig from "../../site-config";
 import {Metadata} from "next";
 export const keywords = ['htetahyan', 'htetahyan.vercel.app', 'htetahyan.com','htetahyan portfolio','next','htet ah yan']
-export const metaTag =async (title?:string,description?:string,image?:string,path?:string): Promise<Metadata>=>{
+export const metaTag = (): Metadata=>{
 
 return {
-    title: title || siteConfig.title,
+    title:  siteConfig.title,
 
-    description: description || siteConfig.tagline,generator: 'Next.js',
+    description: siteConfig.tagline,generator: 'Next.js',
     referrer: 'origin-when-cross-origin',
 
     verification: {
@@ -18,7 +18,7 @@ return {
     },
 
     metadataBase: new URL(siteConfig.url),
-    keywords: [...keywords, title || '',title?.split(' ').join('-') || ''] ,
+    keywords: [...keywords] ,
     alternates: {
         canonical: new URL(siteConfig.url),
     },
@@ -51,23 +51,23 @@ return {
     twitter: {
         card: 'summary',
 
-        title: title || 'Htet Ah Yan',
-        description: description || 'Blogs by Htet Ah Yan',
+        title: 'Htet Ah Yan',
+        description:  'Blogs by Htet Ah Yan',
         creator: 'Htet Ah Yan',
-        images: [image || process.env.NEXT_PUBLIC_BASE_URL + '/opengraph-image.jpg']
+        images: [process.env.NEXT_PUBLIC_BASE_URL + '/opengraph-image.jpg']
     },
     
     openGraph: {
 
-        title: title || 'Htet Ah Yan\'s Blogs',
+        title:  'Htet Ah Yan\'s Blogs',
         type: 'website',
-        description: description || 'Blogs by Htet Ah Yan',
-        url: process.env.NEXT_PUBLIC_BASE_URL! + path ?? '/',
+        description:  'Blogs by Htet Ah Yan',
+        url: process.env.NEXT_PUBLIC_BASE_URL! + '/',
         siteName: 'Htet Ah Yan\'s Blog',
         
 
         images: [ 
-            {url: image || process.env.NEXT_PUBLIC_BASE_URL + '/opengraph-image.jpg',
+            {url:  process.env.NEXT_PUBLIC_BASE_URL + '/opengraph-image.jpg',
             width: 1200,
             height: 630
         }
@@ -78,3 +78,6 @@ return {
     category:'Technology'
 }}
 export default metaTag
+export const metaOptions={
+
+}
