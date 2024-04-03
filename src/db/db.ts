@@ -9,7 +9,7 @@ dotenv.config();
 const config = {
     host: process.env.DB_HOST ,
     database: process.env.DB_NAME,
-    port:  4000,
+    port:  process.env.DB_PORT as unknown as number,
     user: process.env.DB_USER ,
     password: process.env.DB_PASSWORD ,
     waitForConnections: true,

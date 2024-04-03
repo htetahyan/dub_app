@@ -56,21 +56,22 @@ return {
         creator: 'Htet Ah Yan',
         images: [image || process.env.NEXT_PUBLIC_BASE_URL + '/opengraph-image.jpg']
     },
+    
     openGraph: {
 
         title: title || 'Htet Ah Yan\'s Blogs',
         type: 'website',
         description: description || 'Blogs by Htet Ah Yan',
-        url: process.env.NEXT_PUBLIC_BASE_URL! + path || '/',
+        url: process.env.NEXT_PUBLIC_BASE_URL! + path ?? '/',
         siteName: 'Htet Ah Yan\'s Blog',
+        
 
-
-        images: [image!,
-            {
-                url: process.env.NEXT_PUBLIC_BASE_URL + '/opengraph-image.jpg',
-                width: 1200,
-                height: 630
-            }
+        images: [ 
+            {url: image || process.env.NEXT_PUBLIC_BASE_URL + '/opengraph-image.jpg',
+            width: 1200,
+            height: 630
+        }
+            
         ]
     },
 
