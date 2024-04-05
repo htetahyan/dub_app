@@ -1,10 +1,18 @@
 import React from 'react';
 import ShowCase from "~/components/blogs/ShowCase";
+import {jsonLd} from "~/utils/structure-schema";
+import Script from "next/script";
 const Page = async () => {
 
     return (
         <div className={'grid  h-full p-4 '}>
-
+            <Script
+                id="faq-schema"
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{
+                    __html: JSON.stringify(jsonLd),
+                }}
+            />
             <div className={'w-full flex flex-col gap-2  py-10 justify-center items-center '}>
                 <h1 className={' text-subheading lg:text-heading text-primary '}>
                     Welcome to My Blog site.
