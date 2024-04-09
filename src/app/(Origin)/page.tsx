@@ -1,6 +1,6 @@
 import React from 'react';
 import ShowCase from "~/components/blogs/ShowCase";
-import {jsonLd} from "~/utils/structure-schema";
+import {jsonLd} from "../../utils/structure-schema";
 import Script from "next/script";
 const Page = async () => {
 
