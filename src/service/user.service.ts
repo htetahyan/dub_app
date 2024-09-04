@@ -1,6 +1,4 @@
-import {db} from "~/db/db";
-
-import { NewUser, users} from "~/db/schema/schema";
+/*
 import {eq} from "drizzle-orm/sql/expressions/conditions";
 
 
@@ -13,6 +11,8 @@ if(res!.length>0){
 }else{
 const user: NewUser = {
     email,
+    password: '',
+    provider: 'google',
     name,
     photo: picture
 }
@@ -35,3 +35,35 @@ try {
 }
 }
 
+*/
+import {prisma} from "~/utils/utils";
+import {toast} from "sonner";
+
+export const findExistORCreateUserGoogle = async (email: string, name: string, picture:string) => {
+const existedUser= await prisma.user.findFirst({where:{email}})
+    if (existedUser) return existedUser
+
+    const user = {
+        email,
+        password: '',
+        provider: 'google',
+createdAt:new Date(),
+        isEmailVerified: true,
+
+        name,
+        picture
+    }
+
+    const newUser = await prisma.user.create({data: user});
+return newUser
+}
+export const verifyEmail = async () => {
+    try {
+       const res = await fetch('/api/oauth/email', {method: 'POST'}).then(r => r.json())
+toast.success(res.message)
+
+    }catch (e) {
+        throw new Error("Failed to (Auth)")
+    }
+
+}

@@ -1,11 +1,9 @@
-
+'use client'
 import React from 'react';
-import {Button} from "~/components/Button";
-import {logout} from "~/service/user.service";
+import {Button} from "~/components/ui/button";
 import {useRouter} from "next/navigation";
-import {USER} from "~/db/schema/schema";
 
-const Auth_Btn = ({user}: { user: USER }) => {
+const Auth_Btn = ({user}: { user: any }) => {
     const router=useRouter()
 const logout = async () => {
     try {
@@ -16,7 +14,7 @@ const logout = async () => {
     }
 }
     return (
-        <Button variant={user ? 'danger' : 'secondary'}  onClick={user ? logout : () => router.push('/login')} className={'w-full text-left mt-2'}>
+        <Button variant={user ? 'default' : 'outline'}  onClick={user ? logout : () => router.push('/login')} className={'w-full text-left mt-2'}>
             {user ? 'Logout' : 'Login'}
         </Button>
     );

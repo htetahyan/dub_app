@@ -1,6 +1,6 @@
 'use client'
 import React from 'react';
-import {Button} from "~/components/Button";
+import {Button} from "~/components/ui/button";
 import Link from "next/link";
 
 const Error = ({error, reset}: {error: Error; reset: () => void}) => {
@@ -10,7 +10,7 @@ const Error = ({error, reset}: {error: Error; reset: () => void}) => {
             please refresh the page or connect the developer : htetahyan@gmail.com
             </h1>
             <Button variant={'secondary'} onClick={() => reset()}>Try Again</Button>
-<Link href={'/'}><Button variant={'success'}>Go Home</Button></Link>
+<Link href={'/'}><Button variant={'default'}>Go Home</Button></Link>
         </div>
     );
 };

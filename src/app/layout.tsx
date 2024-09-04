@@ -3,16 +3,18 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 import localFont from "next/font/local";
-import Footer from "~/components/Footer";
-import MetaTag from "~/utils/MetaTag";
+
+import { cn } from "~/utils/utils";
+import {Toaster} from "~/components/ui/sonner";
 const NeueMontrealRegular=localFont(
     {
-        src: '../fonts/NeueMontreal-Regular.woff2',
+        src: '../fonts/EuclidCircularB-Medium.woff',
         variable: '--font-NeuMontrealRegular',
 
     }
 )
-export const metadata: Metadata = await MetaTag()
+
+//export const metadata: Metadata = await MetaTag()
 
 export default function RootLayout({
                                        children,
@@ -23,7 +25,10 @@ export default function RootLayout({
         <html lang="en" suppressHydrationWarning
 
               className={`${NeueMontrealRegular.variable}`}>
-        <body className={'font-primary text-primary'} >
+        <Toaster />
+
+        <body className={cn('font-default')} >
+
         {children}
         </body>
         </html>

@@ -3,10 +3,9 @@ import "../globals.css";
 
 
 import Providers from "~/providers/Provider";
-import Sidebar from "~/components/sidebar/sidebar";
 
-import Footer from "~/components/Footer";
-
+import dynamic from "next/dynamic";
+const Header=dynamic(()=>import("~/components/Header"),{ssr:false})
 
 export default function RootLayout({
   children,
@@ -14,14 +13,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" >
+    <html lang="en" suppressHydrationWarning >
       <body className={'font-primary text-primary'} >
       <Providers>
-      <Sidebar>
 
+
+<Header/>
       {children}
-      </Sidebar>
-          <Footer/>
+
+
+
           </Providers>
       </body>
     </html>

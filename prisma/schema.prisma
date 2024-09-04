@@ -1,0 +1,125 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_STRING")
+}
+
+model User {
+  id               Int       @id @default(autoincrement())
+  name             String
+  email            String    @unique
+  createdAt        DateTime  @default(now())
+  emailVerifToken  String?   @unique @db.VarChar(255)
+  emailTokenSentAt DateTime?
+  isEmailVerified  Boolean   @default(false)
+  provider         String
+  password         String
+  picture          String    @default("https://tse3.mm.bing.net/th?id=OIP.HHVUf3TYqncgpJXyCMmxyAHaHa&pid=Api&P=0&h=180")
+
+  // Relationships
+  subscriptions       Subscription[]
+  dubbingProjects     DubbingProject[]
+  paymentMethods      PaymentMethod[]
+  paymentHistory      Payment[]
+  SubscriptionHistory SubscriptionHistory[]
+}
+
+model Pricing {
+  id          Int      @id @default(autoincrement())
+  name        String
+  price       Decimal  @db.Decimal(10, 2)
+  description String?
+  createdAt   DateTime @default(now())
+
+  // Relationships
+  subscriptions       Subscription[]
+  SubscriptionHistory SubscriptionHistory[]
+}
+
+model Subscription {
+  id           Int       @id @default(autoincrement())
+  userId       Int
+  pricingId    Int
+  startDate    DateTime  @default(now())
+  endDate      DateTime?
+  isActive     Boolean   @default(true)
+  totalMinutes Int       @default(0)
+  usedMinutes  Int       @default(0)
+
+  // Relationships
+  user                  User                  @relation(fields: [userId], references: [id])
+  pricing               Pricing               @relation(fields: [pricingId], references: [id])
+  dubbingProjects       DubbingProject[]
+  subscriptionHistories SubscriptionHistory[]
+}
+
+model DubbingProject {
+  id              Int      @id @default(autoincrement())
+  userId          Int
+  title           String
+  description     String?
+  durationMinutes Int
+  createdAt       DateTime @default(now())
+  status          String // e.g., 'pending', 'in-progress', 'completed', 'review'
+
+  // Relationships
+  user           User         @relation(fields: [userId], references: [id])
+  subscription   Subscription @relation(fields: [subscriptionId], references: [id])
+  subscriptionId Int
+}
+
+model SubscriptionHistory {
+  id               Int       @id @default(autoincrement())
+  userId           Int
+  pricingId        Int
+  startDate        DateTime  @default(now())
+  endDate          DateTime?
+  minutesAllocated Int
+  minutesUsed      Int
+
+  // Relationships
+  user           User          @relation(fields: [userId], references: [id])
+  pricing        Pricing       @relation(fields: [pricingId], references: [id])
+  Subscription   Subscription? @relation(fields: [subscriptionId], references: [id])
+  subscriptionId Int?
+}
+
+model PaymentMethod {
+  id                    Int      @id @default(autoincrement())
+  userId                Int
+  stripeCustomerId      String   @unique
+  stripePaymentMethodId String   @unique
+  createdAt             DateTime @default(now())
+
+  // Relationships
+  user    User      @relation(fields: [userId], references: [id])
+  Payment Payment[]
+}
+
+model Payment {
+  id              Int      @id @default(autoincrement())
+  userId          Int
+  amount          Decimal  @db.Decimal(10, 2)
+  paymentDate     DateTime @default(now())
+  paymentMethodId Int
+  stripeChargeId  String   @unique
+  status          String // e.g., 'success', 'failed'
+
+  // Relationships
+  user          User          @relation(fields: [userId], references: [id])
+  paymentMethod PaymentMethod @relation(fields: [paymentMethodId], references: [id])
+}
+
+model AuditTrail {
+  id         Int      @id @default(autoincrement())
+  entityType String
+  entityId   Int
+  action     String
+  changedAt  DateTime @default(now())
+  changes    Json
+
+  @@index([entityType, entityId])
+}

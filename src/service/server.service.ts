@@ -1,5 +1,5 @@
+/*
 import { db} from "~/db/db";
-import {BLOG, blog, likes, TYPE, type, users} from "~/db/schema/schema";
 
 import {and, eq} from "drizzle-orm/sql/expressions/conditions";
 import {asc} from "drizzle-orm";
@@ -140,21 +140,6 @@ export const getLikes=unstable_cache(async (id:number)=> {
     ) as any
        },['likes'],{tags:['likes']}
 )
-export const getUserProfile=unstable_cache(async (token:string)=>{
-    try {
-
-        if(!token) return null
-        const user_id=await extractUserIdFromToken(token)
-        if(!user_id) return null
-        const res=await db?.select().from(users).where(eq(users.id, user_id))
-
-        return res?.[0] || null
-    }catch (e){
-        console.log(e)
-    }
-
-
-},['profile'],{tags:['profile']})
 export const getAuthorProfile=unstable_cache(async (id:number)=>{
     try {
 
@@ -164,3 +149,47 @@ export const getAuthorProfile=unstable_cache(async (id:number)=>{
         console.log(e)
     }
 },['author'],{tags:['author']})
+*/
+
+import {unstable_cache} from "next/cache";
+import {extractUserIdFromToken} from "~/service/jwt.service";
+import {prisma} from "~/utils/utils";
+import {randomBytes} from "node:crypto";
+
+export const getUserProfile=unstable_cache(async (token:string)=>{
+    try {
+
+        if(!token) return null
+        const user_id=await extractUserIdFromToken(token)
+        console.log(user_id,'profile')
+        if(!user_id) return null
+        const user=await prisma.user.findUnique({
+            where:{
+                id:user_id
+            },
+            select:{
+                name:true,
+                email:true,
+                picture:true,
+                id:true
+                ,emailTokenSentAt:true
+                ,isEmailVerified:true,
+                createdAt:true
+
+            }
+        })
+
+        return user || null
+    }catch (e){
+        console.log(e)
+    }
+
+
+},['profile'],{tags:['profile']})
+// Function to generate an email verification token
+export const generateEmailVerificationToken = () => {
+    // generates a buffer containing 32 random bytes.
+    // The 32 indicates the number of bytes to generate, and it is commonly used
+    // for creating secure tokens or identifiers.
+    return randomBytes(32).toString('hex');
+};

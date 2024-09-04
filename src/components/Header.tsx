@@ -1,71 +1,72 @@
-'use client'
-import React, { useState, useEffect, useRef } from 'react';
-import Image from "next/image";
-import logo from '~/assets/icon.svg';
-import { Button } from "~/components/Button";
-import { user_icon } from "~/assets/exporter";
-import {USER} from "~/db/schema/schema";
-import {social_links} from "~/components/Footer";
+import React from 'react';
+import { Button } from "~/components/ui/button";
 import Link from "next/link";
-import dynamic from "next/dynamic";
-const Auth_Btn=dynamic(()=> import('./AuthBtn'),{ssr:false,loading:()=> <div className={'loader'}/>})
+import Auth_Btn from "~/components/AuthBtn";
+import { getUserProfile } from "~/service/server.service";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "~/components/ui/dropdown-menu";
+import { cookies } from "next/headers";
+import Image from 'next/image';
+import { Logo } from '~/assets/exporter';
 
-const Header = ({user}: { user: USER }) => {
-    const [showPopover, setShowPopover] = useState(false);
-    const popoverRef = useRef(null); // Reference to the popover element
-    const buttonRef = useRef(null);
-
-    const togglePopover = () => {
-        setShowPopover(!showPopover);
-    };
-
-
-
-    useEffect(() => {
-        const handleClickOutside = (event:MouseEvent) => {
-            //@ts-ignore
-            if (popoverRef.current && !popoverRef.current.contains(event.target) && buttonRef.current && !buttonRef.current.contains(event.target)) {
-                setShowPopover(false);
-            }
-        };
-
-        document.addEventListener('mousedown', handleClickOutside);
-
-        return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
-        };
-    }, []);
+const Header = async () => {
+    const token = cookies().get('access_token')?.value;
+    const user = token ? await getUserProfile(token) : null;
 
     return (
-        <div className={'relative'}>
-            <div className={'z-10 sticky top-0 border-b-2 bg-[#F9F9F9] border-gray-200 '}>
-                <div className={'w-full flex justify-between items-center p-2'}>
-                    <Image src={logo} alt={'logo'} className={'w-12 h-12'}/>
-                    <div className="relative"> {/* Wrap the button and popover in a relative container */}
-                        <Button ref={buttonRef} variant={'ghost'} className={'hover:shadow-amber-300 h-fit w-fit p-1'} onClick={togglePopover}>
-                            <Image src={user?.photo || user_icon} alt={'user'} width={100} height={100} className={'w-8 h-8 object-cover'}/>
-                        </Button>
-                        {showPopover && (
-                            <div ref={popoverRef} className="absolute right-0 mt-2 p-4 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-10"> {/* Use the ref here */}
-                                <div className="">
-                                    <p className="text-gray-500 text-caption"> @{user?.name || `guest user`}</p>
-
-                                </div>
-
-                                <div className={'grid gap-2 mt-3 text-primary'}>
-                                    <h1 className={'text-caption'}>Contact me</h1>
-                                    {[...social_links,{link:'https://htetahyan.vercel.app',name:'My portfolio'}].map((link, index)=>{
-                                        return <Link  key={index} href={link.link} className="text-small px-2 underline">{link.name}</Link>
-                                    })}
-                                </div>
-                               <Auth_Btn user={user}/>
-                            </div>
-                        )}
-                    </div>
-                </div>
+        <div className={'px-8 w-full max-w-full overflow-x-hidden flex justify-between items-center h-[90px]'}>
+            <div className='w-[100px] h-auto relative'>
+                <Image src={Logo} alt="Logo" className='w-full h-full' />
+            </div>
+            <div className='grid grid-flow-col gap-5'>
+                {MenuItems.map((item) => (
+                    <Link href={item.link} className={'font-semibold text-gray-600 font-primary'} key={item.name}>
+                        {item.name}
+                    </Link>
+                ))}
+            </div>
+            <div>
+                {user ? <UserMenu user={user} /> : <Auth_Btn user={user} />}
             </div>
         </div>
     );
 };
 
 export default Header;
+
+const MenuItems = [
+    { name: "Home", link: "/" },
+    { name: "Pricing", link: "/pricing" },
+    { name: "Contact", link: "/contact" },
+];
+
+export function UserMenu({ user }: { user: any }) {
+    return (
+        <DropdownMenu>
+            <DropdownMenuTrigger className="flex items-center space-x-2 focus:outline-none">
+                <Image
+                    src={user?.picture ?? ''} 
+                    alt="User Avatar"
+                    width={32}
+                    height={32}
+                    className="rounded-full"
+                />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-48">
+                <div className="p-2">
+                    <p className="text-gray-900 font-semibold">{user?.name}</p>
+                    <p className="text-sm text-gray-500">{user?.email}</p>
+                </div>
+                <hr className="my-1" />
+                <DropdownMenuItem>
+                    <Link href="/profile" className="block w-full text-left px-4 py-2">Profile</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                    <Link href="/billing" className="block w-full text-left px-4 py-2">Billing</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                    <Auth_Btn user={user} />
+                </DropdownMenuItem>
+            </DropdownMenuContent>
+        </DropdownMenu>
+    );
+}
