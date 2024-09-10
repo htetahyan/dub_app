@@ -1,156 +1,213 @@
-'use client'
-import React from 'react';
+'use client';
+import React, { useState } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
+import useSWRMutation from 'swr/mutation'
 import { Input } from '../ui/input';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '~/components/ui/select';
+import ListVoicesSelect, { speechSynthesisVoices } from './ListVoicesSelect';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
+import { toast } from 'sonner';
+import { Button } from '../ui/button';
+
+export const Languages = [
+  { name: 'English', code: 'en-US' },
+  { name: 'Chinese', code: 'zh-CN' },
+  { name: 'Japanese', code: 'ja-JP' },
+  { name: 'Korean', code: 'ko-KR' },
+  { name: 'French', code: 'fr-FR' },
+  { name: 'German', code: 'de-DE' },
+  { name: 'French', code: 'fr-FR' },
+  { name: 'Russian', code: 'ru-RU' },
+  { name: 'Spanish', code: 'es-ES' },
+];
+
+// Validation schema
 const schema = Yup.object().shape({
-    projectName: Yup.string().required('Required'),
-    numberOfSpeakers: Yup.string().required('Required'),
-    originalLanguage: Yup.string().required('Required'),
-    translateTo: Yup.string().required('Required'),
-    sourceFiles: Yup.string().required('Required'),
-    youtubeUrl: Yup.string().required('Required'),
-    
-})
+  projectName: Yup.string().required('Project Name is required'),
+  currentLanguage: Yup.string().required('Current Language is required'),
+  translateTo: Yup.string().required('Translate To is required'),
+  voice: Yup.string().required('Voice is required'),
+  sourceFiles: Yup.mixed().nullable(),
+  youtubeUrl: Yup.string().nullable(),
+});
+
 const AddNewDubbing = () => {
+  const { trigger, isMutating } = useSWRMutation('/api/project/add', (url, { arg }: { arg: FormData }) => fetch(url, {
+    method: 'POST',
+    body: arg,
+  }).then(res => res.json()));
+
+  const [activeTab, setActiveTab] = useState('file');
+
   const formik = useFormik({
     initialValues: {
       projectName: '',
-      numberOfSpeakers: 'Auto Detect',
-      originalLanguage: 'English',
-      translateTo: 'German',
-      cloneVoice: false,
-      includeBackgroundAudio: false,
-      addSubtitles: false,
-      sourceFiles: null,
+      currentLanguage: 'en-US',
+      translateTo: 'en-US',
+      voice: speechSynthesisVoices[0],
+      sourceFile: '',
       youtubeUrl: '',
     },
     validationSchema: schema,
-    
-    onSubmit: values => {
-      console.log(values);
+    onSubmit: async (values) => {
+      const file=values.sourceFile[0] as any;
+      const formData = new FormData();
+      formData.append('projectName', values.projectName);
+      formData.append('currentLanguage', values.currentLanguage);
+      formData.append('translateTo', values.translateTo);
+      formData.append('voice', values.voice );
+      formData.append('sourceFile', file);
+      formData.append('fileName', file.name);
+      formData.append('youtubeUrl', values.youtubeUrl);
+  if(!values.sourceFile && !values.youtubeUrl){
+    toast.error('You must select a source file or youtube url');
+    return
+  }
+  console.log(values.sourceFile);
+  
+      toast.promise( 
+        trigger(formData),
+        {
+          loading: 'Saving please do not refresh the page... 🤖',
+          success: 'Saved successfully 👌',
+          error: 'Could not save project! Please try again later.',
+        }
+      ); 
     },
   });
 
+  const handleTabChange = (value: any) => {
+    setActiveTab(value);
+    if (value === 'file') {
+      formik.setFieldValue('youtubeUrl', '');
+    } else if (value === 'yt') {
+      formik.setFieldValue('sourceFile', null);
+    }
+  };
+
   return (
-    <div className='w-[80vw] relative overflow-hidden h-screen p-7'>
-      <h1 className='font-semibold text-3xl'>Dubbing</h1>
-      <p className='font-semibold mb-6'>
-        Convert your video or audio into multiple languages with voice cloning.
-      </p>
 
-      <form onSubmit={formik.handleSubmit} className='space-y-6'>
-        <div className='grid grid-cols-2 gap-4'>
-          <div className='space-y-2'>
-            <label className='block text-sm font-medium text-gray-700'>Project Name</label>
+    <div className='w-2/3  mx-auto p-8 bg-white shadow-lg rounded-lg'>
+      <h1 className='text-3xl font-bold mb-4'>Create a New Dubbing Project</h1>
+      <p className='mb-6 text-gray-600'>Convert your video or audio into multiple languages with voice cloning.</p>
+
+      <form onSubmit={formik.handleSubmit} className='space-y-8'>
+        <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
+          <div>
+            <label className='block text-sm font-semibold mb-2'>Project Name</label>
             <Input
-
               type='text'
               name='projectName'
               onChange={formik.handleChange}
               value={formik.values.projectName}
-              className={`${formik.errors.projectName && formik.touched.projectName ? 'border-red-500' : ''} mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
+              className={`block w-full p-2 border ${
+                formik.errors.projectName && formik.touched.projectName ? 'border-red-500' : 'border-gray-300'
+              } rounded-md shadow-sm focus:ring-primary focus:border-primary`}
               placeholder='Eg. My First Project'
             />
+            {formik.errors.projectName && formik.touched.projectName && (
+              <p className='text-red-500 text-sm'>{formik.errors.projectName}</p>
+            )}
           </div>
-         
-        </div>
 
-        <div className='grid grid-cols-2 gap-4'>
-          <div className='space-y-2'>
-            <label className='block text-sm font-medium text-gray-700'>Original Language</label>
-            <select
-              name='originalLanguage'
-              onChange={formik.handleChange}
-              value={formik.values.originalLanguage}
-              className='mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm'
+          <div>
+            <label className='block text-sm font-semibold mb-2'>Current Language</label>
+            <Select
+              name='currentLanguage'
+              defaultValue={formik.values.currentLanguage}
+              onValueChange={(value) => formik.setFieldValue('currentLanguage', value)}
             >
-              <option value='English'>English</option>
-              <option value='Spanish'>Spanish</option>
-              <option value='French'>French</option>
-              <option value='German'>German</option>
-            </select>
+              <SelectTrigger className='w-full p-2 border border-gray-300 rounded-md'>
+                <SelectValue placeholder='Select language' />
+              </SelectTrigger>
+              <SelectContent>
+                {Languages.map((language) => (
+                  <SelectItem key={language.code} value={language.code}>
+                    {language.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            {formik.errors.currentLanguage && formik.touched.currentLanguage && (
+              <p className='text-red-500 text-sm'>{formik.errors.currentLanguage}</p>
+            )}
           </div>
-          <div className='space-y-2'>
-            <label className='block text-sm font-medium text-gray-700'>Translate To</label>
-            <select
+
+          <div>
+            <label className='block text-sm font-semibold mb-2'>Translate To</label>
+            <Select
               name='translateTo'
-              onChange={formik.handleChange}
-              value={formik.values.translateTo}
-              className='mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm'
+              defaultValue={formik.values.translateTo}
+              onValueChange={(value) => formik.setFieldValue('translateTo', value)}
             >
-              <option value='German'>German</option>
-              <option value='Spanish'>Spanish</option>
-              <option value='French'>French</option>
-              <option value='Chinese'>Chinese</option>
-            </select>
+              <SelectTrigger className='w-full p-2 border border-gray-300 rounded-md'>
+                <SelectValue placeholder='Select language' />
+              </SelectTrigger>
+              <SelectContent>
+                {Languages.map((language) => (
+                  <SelectItem key={language.code} value={language.code}>
+                    {language.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
+
+          <ListVoicesSelect formik={formik} />
         </div>
 
-        <div className='flex items-center space-x-4'>
-          <label className='inline-flex items-center'>
-            <input
-              type='checkbox'
-              name='cloneVoice'
-              onChange={formik.handleChange}
-              checked={formik.values.cloneVoice}
-              className='h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500'
-            />
-            <span className='ml-2 text-sm text-gray-700'>Clone voice</span>
-          </label>
-          <label className='inline-flex items-center'>
-            <input
-              type='checkbox'
-              name='includeBackgroundAudio'
-              onChange={formik.handleChange}
-              checked={formik.values.includeBackgroundAudio}
-              className='h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500'
-            />
-            <span className='ml-2 text-sm text-gray-700'>Include background audio</span>
-          </label>
-          <label className='inline-flex items-center'>
-            <input
-              type='checkbox'
-              name='addSubtitles'
-              onChange={formik.handleChange}
-              checked={formik.values.addSubtitles}
-              className='h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500'
-            />
-            <span className='ml-2 text-sm text-gray-700'>Add Subtitles</span>
-          </label>
+        <div className='space-y-4'>
+          <Tabs defaultValue='file' onValueChange={handleTabChange}>
+            <TabsList className='flex space-x-4'>
+              <TabsTrigger value='file'>Upload File</TabsTrigger>
+              <TabsTrigger value='yt'>YouTube URL</TabsTrigger>
+            </TabsList>
+
+            <TabsContent value='file'>
+              <div className='border-2 border-dashed border-gray-300 p-4 rounded-lg'>
+                <label className='block text-sm font-semibold mb-2'>Select a source file</label>
+                <Input
+                  type='file'
+                  name='sourceFile'
+                  onChange={(event) => formik.setFieldValue('sourceFile', event.currentTarget.files)}
+                  className='w-full p-2 border border-gray-300 rounded-md shadow-sm'
+                />
+                <p className='mt-1 text-sm text-gray-500'>Supports MP4, MOV, MP3, and WAV files, up to 500MB and 30 mins.</p>
+              </div>
+            </TabsContent>
+
+            <TabsContent value='yt'>
+              <label className='block text-sm font-semibold mb-2'>YouTube URL</label>
+              <Input
+                type='text'
+                name='youtubeUrl'
+                onChange={formik.handleChange}
+                value={formik.values.youtubeUrl}
+                className='w-full p-2 border border-gray-300 rounded-md shadow-sm'
+                placeholder='Paste the YouTube URL'
+              />
+            </TabsContent>
+          </Tabs>
         </div>
 
-        <div className='border-2 border-dashed border-gray-300 p-4 rounded-lg'>
-          <label className='block text-sm font-medium text-gray-700 mb-2'>Select a source file</label>
-          <input
-            type='file'
-            name='sourceFiles'
-            onChange={(event) => formik.setFieldValue('sourceFiles', event.currentTarget.files)}
-            className='mt-1 block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none'
-          />
-          <p className='mt-1 text-sm text-gray-500'>Supports MP4, MOV, MP3, and WAV file, up to 500MB and 30 mins.</p>
-        </div>
-
-        <div className='mt-6'>
-          <label className='block text-sm font-medium text-gray-700'>Upload from Youtube URL</label>
-          <Input
-            type='text'
-            name='youtubeUrl'
-            onChange={formik.handleChange}
-            value={formik.values.youtubeUrl}
-            className='mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm'
-            placeholder='Add file URL'
-          />
-        </div>
-
-        <button
+        <Button
+          disabled={formik.isSubmitting || isMutating}
           type='submit'
-          className='mt-6 w-full bg-indigo-600 text-white py-2 px-4 rounded-md shadow-sm hover:bg-indigo-700 focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
+          className='bg-primary text-white py-2 px-4 rounded-md hover:bg-primary-dark focus:ring-2 focus:ring-offset-2 focus:ring-primary-light'
         >
-          Dub It
-        </button>
+          Create new project
+        </Button>
       </form>
+
     </div>
+
   );
 };
 

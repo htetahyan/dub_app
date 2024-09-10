@@ -1,6 +1,7 @@
 import 'server-only'
 import {ResponseCookie} from "next/dist/compiled/@edge-runtime/cookies";
 import {decodeJwt, jwtVerify, SignJWT} from "jose";
+import { cookies } from 'next/headers';
 
 
 const ACCESS_TOKEN_LIFE = '5min'; // 1 day
@@ -8,6 +9,7 @@ const REFRESH_TOKEN_LIFE = '30d'; // 30 days
 const generateUnit8Array = (secret: string) => {
   return  Uint8Array.from(Buffer.from(secret,'base64'));
 }
+
 export const generateAccessToken = async (payload: any) => {
 
     return await new SignJWT({sub: payload})
@@ -31,9 +33,11 @@ const payload = await decodeJWTToken(token) as any
     return payload.exp < Math.floor(Date.now() / 1000)
 }
 export const verifyToken =  async(token: string) => {
+    try { const refreshToken= cookies().get('rf')?.value
     if(!token) return false
-    if(await isTokenExpired(token)) return false
-    try {
+    if(await isTokenExpired(token) && await isTokenExpired(refreshToken!)) return false
+
+   if(await isTokenExpired(token)) return await regenerateToken(token)
 
         const payload = await jwtVerify(token, generateUnit8Array(process.env.JWT_SECRET!), {
             algorithms: ['HS256'],
@@ -71,10 +75,11 @@ export const regenerateToken = async (token: string) => {
 
 const payload = await decodeJWTToken(token)
     if(!payload) return
-    return await new SignJWT({sub: payload.sub})
+    const newToken = await new SignJWT({sub: payload.sub})
         .setProtectedHeader({
             alg: "HS256",
             typ: "JWT",
         })
         .setExpirationTime(ACCESS_TOKEN_LIFE).sign(generateUnit8Array(process.env.JWT_SECRET!));
+ cookies().set('access_token',newToken,cookieOptions(60*60*24))
 }

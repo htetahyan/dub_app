@@ -20,6 +20,7 @@ import DriveUpload from './drive_folder_upload.svg'
 import Speak from './User Speak.svg'
 import Companies from './companies.svg'
 import Visual from './visual.svg'
+import Speaker from './speaker.svg'
 import BgFaq from './bg-faq.svg'
 import MenuOpen from './menu_open.svg'
-export {PlusIcon, Bag,Tune,Logout,DriveUpload,Speak, MenuOpen,BgFaq,Stars,Quote,Visual,Companies,SaasBg,Section1,Logo,loginBg,user_icon,dropDown_icon,arrow_right_icon,blurImg,like_outline_icon,like_fill,google_icon,icon}
+export {Speaker,PlusIcon, Bag,Tune,Logout,DriveUpload,Speak, MenuOpen,BgFaq,Stars,Quote,Visual,Companies,SaasBg,Section1,Logo,loginBg,user_icon,dropDown_icon,arrow_right_icon,blurImg,like_outline_icon,like_fill,google_icon,icon}

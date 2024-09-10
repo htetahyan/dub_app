@@ -38,7 +38,9 @@ try {
 */
 import {prisma} from "~/utils/utils";
 import {toast} from "sonner";
-
+import { cookies } from "next/headers";
+import { extractUserIdFromToken, verifyToken } from "./jwt.service";
+import { unstable_cache } from "next/cache";
 export const findExistORCreateUserGoogle = async (email: string, name: string, picture:string) => {
 const existedUser= await prisma.user.findFirst({where:{email}})
     if (existedUser) return existedUser
@@ -49,8 +51,14 @@ const existedUser= await prisma.user.findFirst({where:{email}})
         provider: 'google',
 createdAt:new Date(),
         isEmailVerified: true,
+    
 
         name,
+        credits:10,
+
+        emailVerifToken: '',
+        emailHash: '',
+
         picture
     }
 
@@ -66,4 +74,16 @@ toast.success(res.message)
         throw new Error("Failed to (Auth)")
     }
 
+}
+export const getCurrentUser = async () => {
+ const token=cookies().get('access_token')?.value
+    if(!token) return null
+ const isTokenLegit=await verifyToken(token as string)
+if(!isTokenLegit) return null
+  const id= await extractUserIdFromToken(token as string)
+    const user = await prisma.user.findUnique({where: {id}})
+    if(!user) return null
+ 
+
+    return user
 }

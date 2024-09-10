@@ -6,6 +6,17 @@
 import createMDX from '@next/mdx'
 import rehypeHighlight from "rehype-highlight";
 const nextConfig = {
+ webpack(config,{isServer}) {
+     if(isServer){
+        config.externals = [
+            ...config.externals,
+            'worker_threads',
+          ];
+     }
+
+
+     return config
+ },
  pageExtensions: ["ts", "tsx", "js", "jsx", "md", "mdx"],
 
     images: {

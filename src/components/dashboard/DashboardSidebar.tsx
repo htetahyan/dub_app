@@ -6,11 +6,16 @@ import { Accordion, AccordionContent, AccordionTrigger } from '../ui/accordion'
 import { AccordionItem } from '@radix-ui/react-accordion'
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 import Link from 'next/link'
+import { cookies } from 'next/headers'
+import { getCurrentUser } from '~/service/user.service'
+import { redirect } from 'next/navigation'
 
 
-const DashboardSidebar = () => {
+const DashboardSidebar = async() => {
+  const user=await getCurrentUser()
+  if(!user) redirect('/login');
   return (
-    <div className='w-[20vw] p-2 relative overflow-hidden'>
+    <div className='w-[20vw] p-2 sticky top-0 overflow-hidden'>
       <div className='w-full flex items-center justify-between p-4 '>
         <h1 className='font-bold text-2xl'>Dashboard</h1>
         <Image src={MenuOpen} alt="Menu opener" className='w-8 h08' />
@@ -18,18 +23,19 @@ const DashboardSidebar = () => {
       <div className='w-full h-[1px] bg-gray-200'/>
       <DashboardAvatar/>
       <div className='w-full mt-4 h-[1px] bg-gray-200'/>
-
-      <Button variant={'ghost'} className='h-16  w-4/5 mx-auto mt-2 text-lg   flex items-center justify-start gap-4 font-semibold '>
+<Link href={'/dashboard'}>
+      <Button variant={'ghost'} className='h-16  w-fit mx-auto mt-2 text-lg   flex items-center justify-start gap-4 font-semibold '>
         <Image src={PlusIcon} alt='Menu opener' className='h-6 w-6 '/>
         Add New Dubbing
       </Button>
+      </Link>
       <div className='w-full mt-2 flex justify-center'>
       <Accordion className='w-4/5  ' type="single" collapsible>
         <AccordionItem className='' value="item-1">
           <AccordionTrigger className='text-gray-500'> Dashboards</AccordionTrigger>
          {
             dashboardLinks.map((dashboard,i)=>(
-               <Link href={dashboard.path}> <AccordionContent  key={i} className='w-full '>
+               <Link key={i} href={'/dashboard'+dashboard.path}> <AccordionContent   className='w-full '>
                     <Button variant={'ghost'} className='h-16 w-full mx-auto my-0 text-md   flex items-center justify-start gap-4 font-semibold '>
         <Image src={dashboard.icon} alt="Menu opener" className='h-6  w-6 '/>
         {dashboard.name}

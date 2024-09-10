@@ -6,26 +6,28 @@ datasource db {
   provider = "postgresql"
   url      = env("DB_STRING")
 }
-
 model User {
-  id               Int       @id @default(autoincrement())
-  name             String
-  email            String    @unique
-  createdAt        DateTime  @default(now())
-  emailVerifToken  String?   @unique @db.VarChar(255)
-  emailTokenSentAt DateTime?
-  isEmailVerified  Boolean   @default(false)
-  provider         String
-  password         String
-  picture          String    @default("https://tse3.mm.bing.net/th?id=OIP.HHVUf3TYqncgpJXyCMmxyAHaHa&pid=Api&P=0&h=180")
-
-  // Relationships
-  subscriptions       Subscription[]
-  dubbingProjects     DubbingProject[]
-  paymentMethods      PaymentMethod[]
-  paymentHistory      Payment[]
-  SubscriptionHistory SubscriptionHistory[]
+  id                   Int       @id @default(autoincrement())
+  name                 String
+  email                String    @unique
+  emailHash            String    @unique
+  createdAt            DateTime  @default(now())
+  emailTokenSentAt     DateTime  @default(now())
+  password             String    
+  emailVerifToken      String
+  isEmailVerified      Boolean   @default(false)
+  provider             String
+  picture              String    @default("https://example.com/default-picture.jpg")
+  credits              Int       @default(10)
+  // Optional relations
+  subscriptions        Subscription[] // A user can have zero or many subscriptions
+  dubbingProjects      DubbingProject[]
+  subscriptionHistories SubscriptionHistory[]
+  paymentMethods       PaymentMethod[]
+  payments             Payment[]
+  auditTrails          AuditTrail[]
 }
+
 
 model Pricing {
   id          Int      @id @default(autoincrement())
@@ -34,41 +36,44 @@ model Pricing {
   description String?
   createdAt   DateTime @default(now())
 
-  // Relationships
-  subscriptions       Subscription[]
-  SubscriptionHistory SubscriptionHistory[]
+  subscriptions Subscription[]
+  subscriptionHistories SubscriptionHistory[]
 }
-
 model Subscription {
   id           Int       @id @default(autoincrement())
-  userId       Int
+  userId       Int?
   pricingId    Int
   startDate    DateTime  @default(now())
   endDate      DateTime?
   isActive     Boolean   @default(true)
-  totalMinutes Int       @default(0)
-  usedMinutes  Int       @default(0)
+  totalCredits Int       @default(10)
+  usedCredits  Int       @default(0)
 
-  // Relationships
-  user                  User                  @relation(fields: [userId], references: [id])
-  pricing               Pricing               @relation(fields: [pricingId], references: [id])
-  dubbingProjects       DubbingProject[]
+  user         User?     @relation(fields: [userId], references: [id])
+  pricing      Pricing   @relation(fields: [pricingId], references: [id])
+  dubbingProjects DubbingProject[]
   subscriptionHistories SubscriptionHistory[]
 }
+
 
 model DubbingProject {
   id              Int      @id @default(autoincrement())
   userId          Int
-  title           String
-  description     String?
+  name            String
+  creditCost      Int
+  currentLanguage String
+  translateTo     String
+  voice           String
+  url             String @default("")
+  youtubeUrl      String?
+  uploadType      String   @default("file")
   durationMinutes Int
+  status          String
   createdAt       DateTime @default(now())
-  status          String // e.g., 'pending', 'in-progress', 'completed', 'review'
 
-  // Relationships
   user           User         @relation(fields: [userId], references: [id])
-  subscription   Subscription @relation(fields: [subscriptionId], references: [id])
-  subscriptionId Int
+  subscription   Subscription? @relation(fields: [subscriptionId], references: [id]) // Make the relation optional
+  subscriptionId Int?          // Make subscriptionId optional
 }
 
 model SubscriptionHistory {
@@ -77,13 +82,12 @@ model SubscriptionHistory {
   pricingId        Int
   startDate        DateTime  @default(now())
   endDate          DateTime?
-  minutesAllocated Int
-  minutesUsed      Int
+  creditAllocated Int
+  creditsUsed      Int
 
-  // Relationships
   user           User          @relation(fields: [userId], references: [id])
   pricing        Pricing       @relation(fields: [pricingId], references: [id])
-  Subscription   Subscription? @relation(fields: [subscriptionId], references: [id])
+  subscription   Subscription? @relation(fields: [subscriptionId], references: [id])
   subscriptionId Int?
 }
 
@@ -94,9 +98,8 @@ model PaymentMethod {
   stripePaymentMethodId String   @unique
   createdAt             DateTime @default(now())
 
-  // Relationships
   user    User      @relation(fields: [userId], references: [id])
-  Payment Payment[]
+  payments Payment[]
 }
 
 model Payment {
@@ -106,9 +109,8 @@ model Payment {
   paymentDate     DateTime @default(now())
   paymentMethodId Int
   stripeChargeId  String   @unique
-  status          String // e.g., 'success', 'failed'
+  status          String
 
-  // Relationships
   user          User          @relation(fields: [userId], references: [id])
   paymentMethod PaymentMethod @relation(fields: [paymentMethodId], references: [id])
 }
@@ -120,6 +122,8 @@ model AuditTrail {
   action     String
   changedAt  DateTime @default(now())
   changes    Json
-
+  userId     Int
+  user       User @relation(fields: [userId], references: [id])
   @@index([entityType, entityId])
 }
+

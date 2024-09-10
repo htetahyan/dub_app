@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 
 import "../globals.css";
-import DashboardSidebar from "~/components/dashboard/DashboardSidebar";
-
+import dynamic from "next/dynamic";
+const DashboardSidebar=dynamic( ()=>import('~/components/dashboard/DashboardSidebar'),{ssr:true} )
 
 
 //export const metadata: Metadata = await MetaTag()
@@ -16,7 +16,7 @@ export default function RootLayout({
         <html lang="en" suppressHydrationWarning
 >
 
-        <body className="flex w-screen"  >
+        <body className="flex w-screen relative overflow-x-hidden "  >
 <DashboardSidebar/>
         {children}
         </body>
