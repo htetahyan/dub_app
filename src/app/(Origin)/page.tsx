@@ -11,9 +11,10 @@ import { Checkbox } from '~/components/ui/checkbox';
 import { Badge } from '~/components/ui/badge';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '~/components/ui/accordion';
 import Subscriptions from '~/components/home/Subscriptions';
+import Header from '~/components/Header';
 
 const Page = async () => {
-    return (
+    return (<><Header/>
         <div className=' h-fit  w-full relative overflow-hidden max-w-full'>
             <Script
                 id="faq-schema"
@@ -86,7 +87,7 @@ const Page = async () => {
 </div>
             </div>
             </div>
-        </div>
+        </div></>
     );
 };
 

@@ -1,3 +1,4 @@
+import 'server-only'
 /*
 import { db} from "~/db/db";
 
@@ -193,3 +194,49 @@ export const generateEmailVerificationToken = () => {
     // for creating secure tokens or identifiers.
     return randomBytes(32).toString('hex');
 };
+export const getCachedProjects=unstable_cache(async (token) => {
+
+    'use server'
+    const userId= await extractUserIdFromToken(token)
+      const projects=await prisma.dubbingProject.findMany({
+          take: 3,
+          skip: 0,
+          
+          orderBy: {
+              createdAt: 'desc',
+            },
+            where: {
+              userId:userId
+            },
+      })
+    return projects
+    },['projects'],{tags:['projects']})
+
+    
+    export const getCurrentPricing=unstable_cache(async (userId)=>{
+        'use server'
+        
+const subscription=await prisma.subscription.findFirst({
+     where:{
+         userId:userId
+     },select:{
+         totalCredits:true
+         ,credits:true,
+         user:{
+             select:{
+                 credits:true
+             }
+         },
+         planName:true,
+         startDate:true,
+         
+         currentPeriodEnd:true,
+         isActive:true
+     }
+ })
+ const credits=subscription?.credits!+subscription?.user?.credits! || 0
+ return {
+     ...subscription,
+     credits
+ }
+    })

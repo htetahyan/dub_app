@@ -14,8 +14,8 @@ const logout = async () => {
     }
 }
     return (
-        <Button variant={user ? 'default' : 'outline'}  onClick={user ? logout : () => router.push('/login')} className={'w-full text-left mt-2'}>
-            {user ? 'Logout' : 'Login'}
+        <Button variant={user ? 'default' : 'outline'}  onClick={user ? logout : () => router.push('/signin')} className={'w-full text-left mt-2'}>
+            {user ? 'Logout' : 'Signin'}
         </Button>
     );
 };

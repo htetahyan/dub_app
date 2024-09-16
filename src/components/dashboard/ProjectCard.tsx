@@ -1,11 +1,11 @@
-import { Download, Play } from "lucide-react";
+import {  Play } from "lucide-react";
+import { DownloadButton } from "./DownloadButton";
 
-export const ProjectCard = ({ project }: any) => {
+ const ProjectCard = ({ project }: any) => {
     const audioUrl = `${process.env.AZURE_BLOB_URL}/${project.url}`;
-    console.log(audioUrl);
 
     return (
-      <div className='border mt-2 p-4 rounded-md bg-gray-100 max-w-xs'>
+      <div className='border mt-2 p-4 rounded-md bg-gray-100 w-full'>
         <div className='flex flex-col gap-2'>
           {/* Play button and audio element */}
           <div className="flex items-center gap-2">
@@ -24,12 +24,10 @@ export const ProjectCard = ({ project }: any) => {
           </div>
   
           {/* Download button */}
-          <div className="flex justify-end">
-            <a href={audioUrl} download>
-              <Download className="h-5 w-5 text-gray-600" />
-            </a>
-          </div>
+         
+          <DownloadButton url={audioUrl} project={project}/>
         </div>
       </div>
     );
   };
+export default ProjectCard

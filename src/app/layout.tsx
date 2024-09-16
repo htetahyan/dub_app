@@ -25,10 +25,10 @@ export default function RootLayout({
         <html lang="en" 
 
               className={`${NeueMontrealRegular.variable}`}>
+        
+
+        <body className={''} >
         <Toaster />
-
-        <body className={cn('font-default')} >
-
         {children}
         </body>
         </html>

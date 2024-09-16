@@ -7,7 +7,7 @@ import { blurHashToDataURL} from "~/utils/imgToBase64";
 
 import { IImageExtended } from "~/utils/types";
 
-export const BlurImage: FC<IImageExtended> = ({
+ const BlurImage: FC<IImageExtended> = ({
                                                       src,
                                                       blurDataURL,
                                                       ...props
@@ -28,3 +28,4 @@ export const BlurImage: FC<IImageExtended> = ({
         />
     );
 };
+export default BlurImage;

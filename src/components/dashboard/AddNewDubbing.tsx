@@ -11,10 +11,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from '~/components/ui/select';
-import ListVoicesSelect, { speechSynthesisVoices } from './ListVoicesSelect';
+import ListVoicesSelect from './ListVoicesSelect';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
 import { toast } from 'sonner';
 import { Button } from '../ui/button';
+import { useRouter } from 'next/navigation';
+import { speechSynthesisVoices } from '~/utils/utils';
 
 export const Languages = [
   { name: 'English', code: 'en-US' },
@@ -23,7 +25,7 @@ export const Languages = [
   { name: 'Korean', code: 'ko-KR' },
   { name: 'French', code: 'fr-FR' },
   { name: 'German', code: 'de-DE' },
-  { name: 'French', code: 'fr-FR' },
+ 
   { name: 'Russian', code: 'ru-RU' },
   { name: 'Spanish', code: 'es-ES' },
 ];
@@ -45,12 +47,13 @@ const AddNewDubbing = () => {
   }).then(res => res.json()));
 
   const [activeTab, setActiveTab] = useState('file');
-
+  
+const router=useRouter()
   const formik = useFormik({
     initialValues: {
       projectName: '',
       currentLanguage: 'en-US',
-      translateTo: 'en-US',
+      translateTo: 'ja-JP',
       voice: speechSynthesisVoices[0],
       sourceFile: '',
       youtubeUrl: '',
@@ -58,6 +61,10 @@ const AddNewDubbing = () => {
     validationSchema: schema,
     onSubmit: async (values) => {
       const file=values.sourceFile[0] as any;
+      if(file.size>52428800){
+        toast.error('File size should be less than 50MB');
+        return
+      }
       const formData = new FormData();
       formData.append('projectName', values.projectName);
       formData.append('currentLanguage', values.currentLanguage);
@@ -70,16 +77,19 @@ const AddNewDubbing = () => {
     toast.error('You must select a source file or youtube url');
     return
   }
-  console.log(values.sourceFile);
+  toast.loading('Creating project...');
+
+  await trigger(formData).then((res) => {
+    toast.dismiss();
+    toast.success(res.message || 'Project created successfully');
+  }).catch((error) => {
+    toast.error(error.message || 'Something went wrong while creating the project');
+  }).finally(() => {
+    router.refresh()
+  });
   
-      toast.promise( 
-        trigger(formData),
-        {
-          loading: 'Saving please do not refresh the page... 🤖',
-          success: 'Saved successfully 👌',
-          error: 'Could not save project! Please try again later.',
-        }
-      ); 
+  
+   
     },
   });
 
@@ -94,7 +104,7 @@ const AddNewDubbing = () => {
 
   return (
 
-    <div className='w-2/3  mx-auto p-8 bg-white shadow-lg rounded-lg'>
+    <div className='lg:w-2/3  w-full mx-auto p-2 lg:p-8 bg-white shadow-lg rounded-lg'>
       <h1 className='text-3xl font-bold mb-4'>Create a New Dubbing Project</h1>
       <p className='mb-6 text-gray-600'>Convert your video or audio into multiple languages with voice cloning.</p>
 
@@ -167,7 +177,6 @@ const AddNewDubbing = () => {
           <Tabs defaultValue='file' onValueChange={handleTabChange}>
             <TabsList className='flex space-x-4'>
               <TabsTrigger value='file'>Upload File</TabsTrigger>
-              <TabsTrigger value='yt'>YouTube URL</TabsTrigger>
             </TabsList>
 
             <TabsContent value='file'>
@@ -175,11 +184,12 @@ const AddNewDubbing = () => {
                 <label className='block text-sm font-semibold mb-2'>Select a source file</label>
                 <Input
                   type='file'
+                  accept='.mp3, .wav'
                   name='sourceFile'
                   onChange={(event) => formik.setFieldValue('sourceFile', event.currentTarget.files)}
                   className='w-full p-2 border border-gray-300 rounded-md shadow-sm'
                 />
-                <p className='mt-1 text-sm text-gray-500'>Supports MP4, MOV, MP3, and WAV files, up to 500MB and 30 mins.</p>
+                <p className='mt-1 text-sm text-gray-500'>Supports MP3, and WAV files.</p>
               </div>
             </TabsContent>
 

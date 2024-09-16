@@ -1,28 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import { extractUserIdFromToken } from "~/service/jwt.service";
 import { prisma } from "~/utils/utils";
+import {getCurrentUser} from "~/service/user.service";
+import {getVideoFromId} from "~/service/elevenlab.service";
 
 export const GET = async (req:NextRequest) => {
-  try {  const params=req.nextUrl.searchParams
-    const token=req.headers.get('access-token')!
-    const page=parseInt(params.get('page')!)  || 0
-     const limit=parseInt(params.get('limit')!) || 10
-  const userId= await extractUserIdFromToken(token)
-    const projects=await prisma.dubbingProject.findMany({
-        take: limit,
-        skip: page * 10,
-        
-        orderBy: {
-            createdAt: 'desc',
-          },
-          where: {
-            userId
-          },
-    })
-    
-    return NextResponse.json({
-        projects})
-
+  try {
+      const user=await getCurrentUser()
+      const dubbingId=req.nextUrl.searchParams.get('dubbingId')
+      if (!user) return NextResponse.json({message:"Unauthorized"},{status:401})
+      const video= await getVideoFromId(dubbingId as string)
+return new Response(video, { status: 200,headers:{'Content-Type': 'video/mp4'} })
   } catch (error) {
     console.log(error)
     return NextResponse.json({ message: 'An error occurred' }, { status: 400 })

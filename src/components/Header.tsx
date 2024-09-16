@@ -11,6 +11,7 @@ import { Logo } from '~/assets/exporter';
 const Header = async () => {
     const token = cookies().get('access_token')?.value;
     const user = token ? await getUserProfile(token) : null;
+console.log(user)   ;
 
     return (
         <div className={'px-8 w-full max-w-full overflow-x-hidden flex justify-between items-center h-[90px]'}>
@@ -25,7 +26,7 @@ const Header = async () => {
                 ))}
             </div>
             <div>
-                {user ? <UserMenu user={user} /> : <Auth_Btn user={user} />}
+                {user ? <Link href={'/dashboard'} className={'font-semibold text-gray-600 font-primary'}>Dashboard</Link> : <Auth_Btn user={user} />}
             </div>
         </div>
     );

@@ -36,7 +36,7 @@ export const convertMp3ToWav = async (file: Blob,extension:string) => {
   return new Promise<string>((resolve, reject) => {
     ffmpeg(tempFilePath)
       .inputFormat(extension)
-      .outputFormat('wav')
+      .outputFormat(extension==='mp3'?'wav':'mp3')
       .on('error', (err) => {
         console.error('Error during ffmpeg conversion:', err);
         reject(err);
