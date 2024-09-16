@@ -23,9 +23,7 @@ const DashboardSidebar =  ({user}:any) => {
     toast.warning('Please subscribe a plan to use this feature')
     
 
-  /*   if(user?.isSubscribed){
-      router.push('/dashboard/video-dubbing')
-     */}
+  }
 
   
   return (

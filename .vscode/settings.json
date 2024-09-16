@@ -1,0 +1,4 @@
+{
+    "appService.defaultWebAppToDeploy": "undefined/subscriptions/924ec634-9d8d-4b93-a4ed-15ff5c63244c/resourceGroups/DefaultResourceGroup-SEA/providers/Microsoft.Web/sites/dubbing",
+    "appService.deploySubpath": "."
+}

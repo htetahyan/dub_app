@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { verifyToken } from "~/service/jwt.service";
 import { getCurrentUser } from "~/service/user.service";
 import {newDubbing} from "~/service/elevenlab.service";
 import {prisma} from "~/utils/utils";
