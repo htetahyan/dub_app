@@ -9,12 +9,23 @@ import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
+import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
+import { LogOut } from 'lucide-react';
 
 const DashboardSidebar =  ({user}:any) => {
   const router=useRouter()
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-
+const logout=async()=>{
+  const res=await fetch('/api/oauth/logout',{
+    method:'POST',
+  })
+  const data=await res.json() ?? {};
+  if(data?.message){
+    toast.success(data.message ?? 'Logged out successfully')
+    router.push('/')
+  }
+}
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
@@ -45,18 +56,26 @@ const DashboardSidebar =  ({user}:any) => {
         <div className="w-full h-[1px] bg-gray-200" />
         <DashboardAvatar user={user}/>
         <div className="w-full mt-4 h-[1px] bg-gray-200" />
-
+<div className='w-full grid grid-cols-2'>
         <Link href={'/dashboard'}>
-          <Button variant={'ghost'} className="h-16 w-fit mx-auto mt-2 text-lg flex items-center justify-start gap-4 font-semibold">
-            <Image src={PlusIcon} alt="Add new dubbing" className="h-6 w-6" />
-            Add New Dubbing
-          </Button>
+          <Button variant={'ghost'} className="h-16 w-fit mx-auto mt-2 text-sm flex items-center justify-start gap-4 font-semibold">
+            <Image src={PlusIcon} alt="audi" className="h-6 w-6" />
+Audio          </Button>
         </Link>
-          <Button variant={'ghost'} onClick={GoToVideoDubbing} className="h-16 w-fit mx-auto mt-2 text-lg flex items-center justify-start gap-4 font-semibold">
+        <Link href={'/dashboard/video-dubbing'}>
+          <Button variant={'ghost'} disabled={!user?.isSubscribed}  className="h-16 w-fit mx-auto mt-2 text-sm flex items-center justify-start gap-4 font-semibold">
             <Image src={PlusIcon} alt="Add new dubbing" className="h-6 w-6" />
-            New VideoDubbing
-          </Button>
-
+Video          </Button>
+</Link>
+          </div>
+{!user?.isSubscribed && (
+  <Alert variant="destructive" className="w-4/5 mx-auto mt-2">
+    <AlertTitle>Subscribe</AlertTitle>
+    <AlertDescription>
+      Please subscribe a plan to use dubbing feature
+    </AlertDescription>
+    </Alert>
+)}
         <div className="w-full mt-2 flex justify-center">
           <Accordion className="w-4/5" type="single" collapsible>
             <AccordionItem value="item-1">
@@ -76,9 +95,8 @@ const DashboardSidebar =  ({user}:any) => {
         </div>
 
         <div className="w-full mt-4 h-[1px] bg-gray-200" />
-        <Button variant={'default'} className="h-16 w-4/5 mx-auto mt-4 text-md bg-danger hover:bg-danger/80 flex items-center justify-start gap-4 font-semibold">
-          <h2 className="h-6 text-white rounded-full w-6 flex items-center justify-center bg-secondary">+</h2>
-          Add New Dubbing
+        <Button onClick={logout} variant={'destructive'} className="h-fit w-fit mx-auto mt-4 text-md flex items-center justify-start gap-4 font-semibold">
+          Log out <LogOut className="h-6 w-6" />
         </Button>
       </div>
     </div>

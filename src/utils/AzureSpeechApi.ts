@@ -11,6 +11,7 @@ import { tmpdir } from 'os';
 import TextTranslationClient from "@azure-rest/ai-translation-text";
 import { CognitiveServicesCredentials } from '@azure/ms-rest-azure-js';
 import { uploadArrayBuffer } from '~/service/storage.azure';
+import { randomUUID } from 'crypto';
 
 const writeFileAsync = promisify(writeFile);
 const unlinkAsync = promisify(unlink);
@@ -193,8 +194,7 @@ let text=''
     const speechAudioData = await textToSpeech(text, voice, targetLanguage, currentLanguage);
 
     // Upload the audio data to Azure storage and return the URL
-    const url = await uploadArrayBuffer(speechAudioData as Buffer, fileName);
-    console.log(`Uploaded audio URL: ${url}`);
+    const url = await uploadArrayBuffer(speechAudioData as Buffer, randomUUID() + '.wav');
 
     return url;
   } catch (err) {

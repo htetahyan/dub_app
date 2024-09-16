@@ -25,4 +25,13 @@ import BgSignin from './bg-signin.svg'
 import LogoWhite from './Logo.svg'
 import BgFaq from './bg-faq.svg'
 import MenuOpen from './menu_open.svg'
-export {LogoWhite,Speaker,PlusIcon, BgSignin, Bag,Tune,Logout,DriveUpload,Speak, MenuOpen,BgFaq,Stars,Quote,Visual,Companies,SaasBg,Section1,Logo,loginBg,user_icon,dropDown_icon,arrow_right_icon,blurImg,like_outline_icon,like_fill,google_icon,icon}
+import Spiral from './54.svg'
+import Vector14 from './Vector 14.png'
+import Star from './7.svg'
+import Fb from './fb.svg'
+import Ig from './insta.svg'
+import twitter from './twitter.svg'
+export {
+    Spiral,Star,Vector14,
+    Fb, Ig, twitter,
+    LogoWhite,Speaker,PlusIcon, BgSignin, Bag,Tune,Logout,DriveUpload,Speak, MenuOpen,BgFaq,Stars,Quote,Visual,Companies,SaasBg,Section1,Logo,loginBg,user_icon,dropDown_icon,arrow_right_icon,blurImg,like_outline_icon,like_fill,google_icon,icon}

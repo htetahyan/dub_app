@@ -18,11 +18,11 @@ export const uploadArrayBuffer = async (file:any,name:string) => {
     
         // Get container client
         const containerClient = blobServiceClient.getContainerClient('dubbingapp');
-        const blockBlobClient = containerClient.getBlockBlobClient(name+'.wav');
+        const blockBlobClient = containerClient.getBlockBlobClient(name);
     
         const uploadResponse = await blockBlobClient.uploadData(buffer);
     
-        return name+'.wav';
+        return name;
       } catch (err) {
         console.error('Error uploading to Azure Blob Storage:', err);
         throw err;

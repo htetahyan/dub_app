@@ -1,14 +1,22 @@
 import { cookies } from 'next/headers'
+import { redirect } from 'next/navigation'
 import React from 'react'
+import { toast } from 'sonner'
 import Subscriptions from '~/components/home/Subscriptions'
 import { Card, CardContent, CardDescription, CardHeader } from '~/components/ui/card'
 import { extractUserIdFromToken } from '~/service/jwt.service'
 import { getCurrentPricing } from '~/service/server.service'
+import { getCurrentUser } from '~/service/user.service'
 
 const page = async() => {
-  const token=  cookies().get('access_token')?.value as string
-  const userId= await extractUserIdFromToken(token);
-  const pricing=await getCurrentPricing(userId);
+ const user=await getCurrentUser()
+ if(user?.isEmailVerified===true){
+
+
+  redirect('/dashboard/settings')
+ }
+  const pricing=await getCurrentPricing(user?.id);
+
   
   return (
     <div className='w-full h-full relative overflow-hidden p-8 '>

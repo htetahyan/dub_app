@@ -27,7 +27,7 @@ export default function RootLayout({
               className={`${NeueMontrealRegular.variable}`}>
         
 
-        <body className={''} >
+        <body className={'font-secondary'} >
         <Toaster />
         {children}
         </body>

@@ -1,20 +1,19 @@
 import React from 'react';
 import { jsonLd } from "../../utils/structure-schema";
 import Script from "next/script";
-import { BgFaq, Companies, Quote, SaasBg, Section1, Stars, Visual } from '~/assets/exporter';
+import {  Companies, Quote, SaasBg, Section1, Stars, Visual } from '~/assets/exporter';
 import Image from 'next/image';
 import { Input } from '~/components/ui/input';
 import { Button } from '~/components/ui/button';
 import Features from '~/components/home/features';
-import { features } from 'process';
-import { Checkbox } from '~/components/ui/checkbox';
-import { Badge } from '~/components/ui/badge';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '~/components/ui/accordion';
+
 import Subscriptions from '~/components/home/Subscriptions';
-import Header from '~/components/Header';
+import { getCurrentUser } from '~/service/user.service';
+
 
 const Page = async () => {
-    return (<><Header/>
+    const user=await getCurrentUser()
+    return (<>
         <div className=' h-fit  w-full relative overflow-hidden max-w-full'>
             <Script
                 id="faq-schema"
@@ -38,7 +37,7 @@ const Page = async () => {
                 </div>
             </div>
             <div className='w-full h-screen relative '>
-                <Image alt='visual image' fill  src={Visual} />
+                <Image alt='visual image'  fill  src={Visual} />
             </div>
             <div className='h-screen w-full'>not implemented yet</div>
            
@@ -46,11 +45,11 @@ const Page = async () => {
             <div className='h-fit w-full flex flex-col items-center'>
                 <h1 className='text-3xl font-bold text-center'>Testimonials</h1>
                 <h4  className='text-gray-500'>Don't just take our word for it, see what our customers have to say!</h4>
-               <div className='w-3/4 gap-x-6 mt-4 grid grid-cols-3 '>
+               <div className='lg:w-3/4 lg:gap-x-6 p-4 lg:p-0 mt-4 grid lg:grid-cols-3 '>
                {reviews.map((review)=>(
                    <div key={review.name} className='w-full flex flex-col gap-4'>
                     <Image src={Stars} alt="stars" className='w-1/3' />
-                       <h3 className='text-md font-bold'>{review.review}</h3> 
+                       <h3 className='lg:text-md text-sm font-bold'>{review.review}</h3> 
                       <div className='w-full flex justify-between items-center'> <p className='font-semibold'>{review.name}</p>
                       <Image src={Quote} alt="quotes" className='w-12' />
                       </div>
@@ -58,36 +57,14 @@ const Page = async () => {
                    ))}
                </div>
             </div>
-          <Subscriptions/>
+            <h1 className='text-3xl font-bold text-center mt-6'>Pricing Plans</h1>
+            <p className='text-gray-500 text-center mt-2'>Don't just take our word for it, see what our customers have to say!</p>
+        <div className='lg:w-full w-[90%] mx-auto'> <Subscriptions user={user}/></div> 
             <div>
-            <div className='h-[30vh] mt-20 bg-black text-white flex flex-col justify-center gap-6 items-center'>
-                <h1 className='text-3xl font-bold'>Deliver your best work with dubbyai.com </h1>
-                <p>No credit card needed ✦ Unlimited time on Free plan</p>
-                <Button variant={'default'} className='bg-default hover:bg-default/90 rounded-3xl'>Get Started</Button>
+        
             </div>
-            <div className='h-[70vh] w-screen grid grid-cols-2 place-items-center'>
-<div className='place-self-center'>
-    <Badge >FAQ</Badge>
-
-    <h1 className='text-5xl mt-4 font-bold w-2/3'>Frequently asked questions</h1>
-    <Button variant={'outline'} className='mt-4'> Talk to us</Button>
-  <div className='w-full flex justify-end'> <Image src={BgFaq} alt="icon" className='w-48 h-auto flex justify-end'  /></div> 
-</div>
-<div className='w-3/4'>
-<Accordion type="single" collapsible className="w-full">
-     {faqItems.map((item)=>(
-        <AccordionItem key={item.question} value={item.question} className='w-full'>
-            <AccordionTrigger>{item.question}</AccordionTrigger>
-            <AccordionContent className='w-full'>
-                {item.answer}
-            </AccordionContent>
-        </AccordionItem>
-     ))}
-    </Accordion>
-</div>
-            </div>
-            </div>
-        </div></>
+        </div>
+        </>
     );
 };
 
@@ -131,11 +108,3 @@ const planCards=[
         ],
     },
 ]
-const faqItems=[{
-    question:"How many credits does it cost to dub?",
-    answer:" for 1 min  1 credit. for 5 min, 5 credits."
-
-},{
-    question:"What happens when I run out of credits?",
-    answer:"No worries, you can always get more credits."
-}]

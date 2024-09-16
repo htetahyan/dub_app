@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import useSWRMutation from 'swr/mutation'
+import useSWRMutation from 'swr/mutation';
 import { Input } from '../ui/input';
 import {
   Select,
@@ -17,6 +17,7 @@ import { toast } from 'sonner';
 import { Button } from '../ui/button';
 import { useRouter } from 'next/navigation';
 import { speechSynthesisVoices } from '~/utils/utils';
+import { Textarea } from '../ui/textarea';
 
 export const Languages = [
   { name: 'English', code: 'en-US' },
@@ -25,7 +26,6 @@ export const Languages = [
   { name: 'Korean', code: 'ko-KR' },
   { name: 'French', code: 'fr-FR' },
   { name: 'German', code: 'de-DE' },
- 
   { name: 'Russian', code: 'ru-RU' },
   { name: 'Spanish', code: 'es-ES' },
 ];
@@ -36,77 +36,65 @@ const schema = Yup.object().shape({
   currentLanguage: Yup.string().required('Current Language is required'),
   translateTo: Yup.string().required('Translate To is required'),
   voice: Yup.string().required('Voice is required'),
-  sourceFiles: Yup.mixed(),
-  
+  ttsInput: Yup.string().required('Text input is required'),
 });
 
-const AddNewDubbing = () => {
-  const { trigger, isMutating } = useSWRMutation('/api/project/add', (url, { arg }: { arg: FormData }) => fetch(url, {
+const TTSForm = () => {
+  const { trigger, isMutating } = useSWRMutation('/api/project/tts', (url, { arg }: { arg: FormData }) => fetch(url, {
     method: 'POST',
     body: arg,
   }).then(res => res.json()));
 
-  const [activeTab, setActiveTab] = useState('file');
-  
-const router=useRouter()
+  const [activeTab, setActiveTab] = useState('text');
+  const [charCount, setCharCount] = useState(0);
+  const router = useRouter();
+
   const formik = useFormik({
     initialValues: {
       projectName: '',
       currentLanguage: 'en-US',
       translateTo: 'ja-JP',
       voice: speechSynthesisVoices[0],
-      sourceFile: '',
-      youtubeUrl: '',
+      ttsInput: '',
     },
     validationSchema: schema,
     onSubmit: async (values) => {
-      const file=values.sourceFile[0] as any;
-      if(file.size>52428800){
-        toast.error('File size should be less than 50MB');
-        return
+      if (!values.ttsInput) {
+        toast.error('You must enter text for speech synthesis');
+        return;
       }
+
       const formData = new FormData();
       formData.append('projectName', values.projectName);
       formData.append('currentLanguage', values.currentLanguage);
-      formData.append('translateTo', values.translateTo);
-      formData.append('voice', values.voice );
-      formData.append('sourceFile', file);
-      formData.append('fileName', file.name);
-      formData.append('youtubeUrl', values.youtubeUrl);
-  if(!values.sourceFile && !values.youtubeUrl){
-    toast.error('You must select a source file or youtube url');
-    return
-  }
-  toast.loading('Creating project...');
+      formData.append('targetLanguage', values.translateTo);
+      formData.append('voice', values.voice);
+      formData.append('totalCredits', String(charCount));
+      formData.append('text', values.ttsInput);
 
-  await trigger(formData).then((res) => {
-    toast.dismiss();
-    toast.success(res.message || 'Project created successfully');
-  }).catch((error) => {
-    toast.error(error.message || 'Something went wrong while creating the project');
-  }).finally(() => {
-    router.refresh()
-  });
-  
-  
-   
+      toast.loading('Creating project...');
+
+      await trigger(formData).then((res) => {
+        toast.dismiss();
+        toast.success(res.message || 'Project created successfully');
+      }).catch((error) => {
+        toast.error(error.message || 'Something went wrong while creating the project');
+      }).finally(() => {
+        router.refresh();
+      });
     },
   });
 
-  const handleTabChange = (value: any) => {
-    setActiveTab(value);
-    if (value === 'file') {
-      formik.setFieldValue('youtubeUrl', '');
-    } else if (value === 'yt') {
-      formik.setFieldValue('sourceFile', null);
-    }
+  const handleTextInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const inputText = e.target.value;
+    formik.setFieldValue('ttsInput', inputText);
+    setCharCount(inputText.length);
   };
 
   return (
-
-    <div className='lg:w-2/3  w-full mx-auto p-2 lg:p-8 bg-white shadow-lg rounded-lg'>
-      <h1 className='text-3xl font-bold mb-4'>Create a New Dubbing Project</h1>
-      <p className='mb-6 text-gray-600'>Convert your video or audio into multiple languages with voice cloning.</p>
+    <div className=' col-span-2  mx-auto p-2 lg:p-8 bg-white shadow-lg rounded-lg'>
+      <h1 className='text-3xl font-bold mb-4'>Create a New TTS Project</h1>
+      <p className='mb-6 text-gray-600'>Convert your text into speech with voice cloning.</p>
 
       <form onSubmit={formik.handleSubmit} className='space-y-8'>
         <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
@@ -174,40 +162,18 @@ const router=useRouter()
         </div>
 
         <div className='space-y-4'>
-          <Tabs defaultValue='file' onValueChange={handleTabChange}>
-            <TabsList className='flex space-x-4'>
-              <TabsTrigger value='file'>Upload File</TabsTrigger>
-            </TabsList>
-
-            <TabsContent value='file'>
-              <div className='border-2 border-dashed border-gray-300 p-4 rounded-lg'>
-                <label className='block text-sm font-semibold mb-2'>Select a source file</label>
-                <Input
-                  type='file'
-                  accept='.mp3, .wav'
-                  name='sourceFile'
-                  onChange={(event) => formik.setFieldValue('sourceFile', event.currentTarget.files)}
-                  className='w-full p-2 border border-gray-300 rounded-md shadow-sm'
-                />
-                <p className='mt-1 text-sm text-gray-500'>Supports MP3, and WAV files.</p>
-              </div>
-              {formik.errors.sourceFile && formik.touched.sourceFile && (
-                <p className='text-red-500 text-sm'>{formik.errors.sourceFile}</p>
-              )}
-            </TabsContent>
-
-            <TabsContent value='yt'>
-              <label className='block text-sm font-semibold mb-2'>YouTube URL</label>
-              <Input
-                type='text'
-                name='youtubeUrl'
-                onChange={formik.handleChange}
-                value={formik.values.youtubeUrl}
-                className='w-full p-2 border border-gray-300 rounded-md shadow-sm'
-                placeholder='Paste the YouTube URL'
-              />
-            </TabsContent>
-          </Tabs>
+          <label className='block text-sm font-semibold mb-2'>Text Input</label>
+          <Textarea
+            name='ttsInput'
+            onChange={handleTextInputChange}
+            value={formik.values.ttsInput}
+            className='w-full p-2 border border-gray-300 rounded-md shadow-sm'
+            placeholder='Enter the text to be synthesized into speech'
+          />
+          <p className='mt-1 text-sm text-gray-500'>Character count: {charCount}</p>
+          {formik.errors.ttsInput && formik.touched.ttsInput && (
+            <p className='text-red-500 text-sm'>{formik.errors.ttsInput}</p>
+          )}
         </div>
 
         <Button
@@ -218,10 +184,8 @@ const router=useRouter()
           Create new project
         </Button>
       </form>
-
     </div>
-
   );
 };
 
-export default AddNewDubbing;
+export default TTSForm;

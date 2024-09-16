@@ -6,18 +6,16 @@ import {NextRequest} from "next/server";
 import {generateEmailVerificationToken, getUserProfile} from "~/service/server.service";
 import {prisma} from "~/utils/utils";
 import { sendEmailWithRetry } from "~/service/oAuth.service";
+import { getCurrentUser } from "~/service/user.service";
 
 
 
 export async function POST(request: NextRequest) {
-    const token = request.cookies.get('access_token')?.value;
 
-    if (!token) return NextResponse.json({error: 'Please login again'}, {status: 401});
 
     try {
-        const id = await extractUserIdFromToken(token);
-        const user=await prisma.user.findFirstOrThrow({where:{id}})
-      
+      const user= await getCurrentUser()
+      if(!user) return NextResponse.json({message: 'Unauthorized'}, {status: 401});
         
         if (new Date(user?.emailTokenSentAt!).getTime() > Date.now() - 3 * 60 * 1000) {
             console.log("Attempt to resend within 3 minutes.");
