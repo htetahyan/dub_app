@@ -8,7 +8,7 @@ const DashboardSideWrapper = async() => {
     console.log(user,'user')
     if(!user) redirect('/signin');
   return (
-    <div>
+    <div className=''>
       <DashboardSidebar user={user}/>
     </div>
   )

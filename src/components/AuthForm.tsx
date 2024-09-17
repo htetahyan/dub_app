@@ -55,7 +55,7 @@ const AuthForm = () => {
         console.log(values);
         
         // Handle form submission
-         const res=await fetch('/api/signup', {
+         const res=await fetch('/api/oauth/signup', {
            method: 'POST',
            headers: {
              'Content-Type': 'application/json',

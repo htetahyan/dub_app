@@ -12,7 +12,7 @@ import { toast } from 'sonner';
 import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
 import { LogOut } from 'lucide-react';
 
-const DashboardSidebar =  ({user}:any) => {
+const DashboardSidebar     =  ({user}:any) => {
   const router=useRouter()
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -29,12 +29,7 @@ const logout=async()=>{
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
-  const GoToVideoDubbing=()=>{
-   if(user?.isSubscribed){ router.push('/dashboard/video-dubbing') }
-    toast.warning('Please subscribe a plan to use this feature')
-    
-
-  }
+  
 
   
   return (
@@ -45,8 +40,8 @@ const logout=async()=>{
       </button>
 
       {/* Sidebar */}
-      <div className={`fixed inset-0 z-50 bg-white transition-transform transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 lg:relative lg:top-0 lg:w-[20vw] lg:block`}>
-        <div className="w-full flex items-center justify-between p-4">
+      <div className={`fixed inset-0 z-50 bg-white transition-transform transform overflow-hidden ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 lg:relative lg:top-0 lg:w-[20vw] lg:block`}>
+      <div className="w-full flex items-center justify-between p-4">
           <h1 className="font-bold text-2xl">Dashboard</h1>
           <button className="lg:hidden" onClick={toggleSidebar}>
             <Image src={MenuOpen} alt="Menu opener" className="w-8 h-8" />
@@ -57,17 +52,26 @@ const logout=async()=>{
         <DashboardAvatar user={user}/>
         <div className="w-full mt-4 h-[1px] bg-gray-200" />
 <div className='w-full grid grid-cols-2'>
-        <Link href={'/dashboard'}>
-          <Button variant={'ghost'} className="h-16 w-fit mx-auto mt-2 text-sm flex items-center justify-start gap-4 font-semibold">
-            <Image src={PlusIcon} alt="audi" className="h-6 w-6" />
-Audio          </Button>
-        </Link>
-        <Link href={'/dashboard/video-dubbing'}>
+     
+          <Button variant={'ghost'}  disabled={!user?.isSubscribed} className="h-16 w-fit mx-auto mt-2 text-sm flex items-center justify-start gap-4 font-semibold">
+           
+          <Link href={'/dashboard'}> <Image src={PlusIcon} alt="audi" className="h-6 w-6" />
+
+Audio        </Link>  </Button>
+        
           <Button variant={'ghost'} disabled={!user?.isSubscribed}  className="h-16 w-fit mx-auto mt-2 text-sm flex items-center justify-start gap-4 font-semibold">
-            <Image src={PlusIcon} alt="Add new dubbing" className="h-6 w-6" />
-Video          </Button>
-</Link>
-          </div>
+          <Link href={'/dashboard/video-dubbing'}>
+          <Image src={PlusIcon} alt="Add new dubbing" className="h-6 w-6" />
+Video     </Link>     </Button>
+
+<Button variant={'ghost'} className="h-16 w-full mx-auto text-md flex items-center justify-start gap-4 font-semibold">
+  <Link href={'/dashboard/text-to-speech'}>
+    <Image src={PlusIcon} alt="Add new dubbing" className="h-6 w-6" />
+    TTS
+  </Link>
+</Button>
+
+  </div>
 {!user?.isSubscribed && (
   <Alert variant="destructive" className="w-4/5 mx-auto mt-2">
     <AlertTitle>Subscribe</AlertTitle>
@@ -76,24 +80,23 @@ Video          </Button>
     </AlertDescription>
     </Alert>
 )}
-        <div className="w-full mt-2 flex justify-center">
-          <Accordion className="w-4/5" type="single" collapsible>
-            <AccordionItem value="item-1">
-              <AccordionTrigger className="text-gray-500">Dashboards</AccordionTrigger>
-              {dashboardLinks.map((dashboard, i) => (
-                <Link key={i} onClick={toggleSidebar} href={'/dashboard' + dashboard.path}>
-                  <AccordionContent className="w-full">
-                    <Button variant={'ghost'} className="h-16 w-full mx-auto my-0 text-md flex items-center justify-start gap-4 font-semibold">
-                      <Image src={dashboard.icon} alt="Dashboard link" className="h-6 w-6" />
-                      {dashboard.name}
-                    </Button>
-                  </AccordionContent>
-                </Link>
-              ))}
-            </AccordionItem>
-          </Accordion>
-        </div>
-
+       <div className="w-full mt-2 flex justify-center">
+  <Accordion className="w-full" type="single" collapsible>
+    <AccordionItem value="item-1">
+      <AccordionTrigger className="text-gray-500">Dashboards</AccordionTrigger>
+      {dashboardLinks.map((dashboard, i) => (
+        <Link key={i} onClick={toggleSidebar} href={'/dashboard' + dashboard.path}>
+          <AccordionContent className="w-full">
+            <Button variant={'ghost'} className="h-16 w-full mx-auto my-0 text-md flex items-center justify-start gap-4 font-semibold">
+              <Image src={dashboard.icon} alt="Dashboard link" className="h-6 w-6" />
+              {dashboard.name}
+            </Button>
+          </AccordionContent>
+        </Link>
+      ))}
+    </AccordionItem>
+  </Accordion>
+</div>
         <div className="w-full mt-4 h-[1px] bg-gray-200" />
         <Button onClick={logout} variant={'destructive'} className="h-fit w-fit mx-auto mt-4 text-md flex items-center justify-start gap-4 font-semibold">
           Log out <LogOut className="h-6 w-6" />

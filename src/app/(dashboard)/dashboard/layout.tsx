@@ -13,7 +13,7 @@ export default function RootLayout({
     return (
      
 
-        <div className="lg:flex w-screen  "  >
+        <div className="lg:flex  "  >
 <DashboardSideWrapper/>
         {children}
         </div>

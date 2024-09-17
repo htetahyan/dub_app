@@ -16,7 +16,7 @@ const Page = async() => {
             {//<VerifyEmailAlert/>
             }
             
-            <div className='lg:flex lg:w-[80vw] w-full h-screen items-center justify-center gap-8  '>
+            <div className='lg:flex lg:w-[70vw] overflow-x-hidden  w-full h-screen items-center justify-center gap-8  '>
 
             <AddNewDubbing/>
             <RecentDubbing projects={projects ?? []} />

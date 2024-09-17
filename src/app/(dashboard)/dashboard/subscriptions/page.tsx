@@ -19,7 +19,7 @@ const page = async() => {
 
   
   return (
-    <div className='w-full h-full relative overflow-hidden p-8 '>
+    <div className='w-full h-fit relative overflow-hidden p-8 '>
         <h1 className='font-bold text-2xl'>Subscriptions</h1>
         <Card className='mt-4 w-full lg:w-2/3'>
            <div className='w-full flex items-center justify-between '> <CardHeader className='w-fit '>
@@ -34,7 +34,7 @@ const page = async() => {
             </CardContent>
             </Card>
         <p className='text-gray-500  mt-2'>Purchase credits or subscribe to a plan for move savings.</p>
-       <div className='w-full bg-gray-200'>
+       <div className='w-full '>
        <Subscriptions/></div> 
       
     </div>
