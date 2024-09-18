@@ -239,4 +239,4 @@ const subscription=await prisma.subscription.findFirst({
      ...subscription,
      credits
  }
-    })
+    },['user'],{tags:['user']})

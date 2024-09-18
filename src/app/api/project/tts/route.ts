@@ -1,3 +1,5 @@
+import { revalidateTag } from "next/cache";
+import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { parse } from "path";
 import { uploadArrayBuffer } from "~/service/storage.azure";
@@ -7,8 +9,9 @@ import { prisma } from "~/utils/utils";
 
 export const POST = async (request: Request) => {
     try { 
-    const user=await getCurrentUser()
-    const subscription = await prisma.subscription.findFirst({where:{userId:user?.id}})
+        const accessToken=cookies().get('access_token')?.value
+        const user = await getCurrentUser(accessToken)  
+          const subscription = await prisma.subscription.findFirst({where:{userId:user?.id}})
     const form=await request.formData()
     const text=form.get('text') as string
     
@@ -35,20 +38,19 @@ export const POST = async (request: Request) => {
                 connect:{
                     id:user?.id
                 }
-            },subscription:{
-                connect:{
-                    id:subscription?.id
-                }
             },
     
             url
         }
     })
-   await prisma.$transaction( [
-prisma.user.update({where:{id:user?.id},data:{credits:{decrement:parseInt(totalCredits)} }}),
-prisma.subscription.update({where:{id:subscription?.id},data:{totalCredits:{decrement:parseInt(totalCredits)}}})
-   ]
-) 
+  
+await prisma.user.update({where:{id:user?.id},data:{credits:{decrement:parseInt(totalCredits)} }})
+if( user?.isSubscribed){
+    await prisma.subscription.update({where:{id:subscription?.id},data:{credits:{decrement:parseInt(totalCredits)}}})
+}
+revalidateTag('user');
+
+
     return NextResponse.json({message: 'success'}, {status: 200});
 
     } catch (error) {

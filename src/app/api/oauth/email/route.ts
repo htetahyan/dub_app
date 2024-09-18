@@ -14,8 +14,9 @@ export async function POST(request: NextRequest) {
 
 
     try {
-      const user= await getCurrentUser()
-      if(!user) return NextResponse.json({message: 'Unauthorized'}, {status: 401});
+        const accessToken=request.cookies.get('access_token')?.value as string
+        const user = await getCurrentUser(accessToken)   
+           if(!user) return NextResponse.json({message: 'Unauthorized'}, {status: 401});
         
         if (new Date(user?.emailTokenSentAt!).getTime() > Date.now() - 3 * 60 * 1000) {
             console.log("Attempt to resend within 3 minutes.");

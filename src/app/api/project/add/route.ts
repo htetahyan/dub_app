@@ -86,6 +86,7 @@ const audioUrl = await processDubbingAndSynthesis(fileName, file, voice, current
         revalidateTag('projects');
 
         // Respond with the result
+        revalidateTag('user');
         return NextResponse.json({ message: 'Project created successfully' }, { status: 200 });
     } catch (error: any) {
         console.error(error);

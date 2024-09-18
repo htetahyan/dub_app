@@ -75,11 +75,11 @@ toast.success(res.message)
     }
 
 }
-export const getCurrentUser = async () => {
+export const getCurrentUser = async (token: any) => {
+const refreshToken=cookies().get('refresh_token')?.value
 
- const token=cookies().get('access_token')?.value
-    if(!token) return null
- const isTokenLegit=await verifyToken(token as string)
+ const isTokenLegit=await verifyToken(token as string,refreshToken as string)
+
 if(!isTokenLegit) return null
   const id= await extractUserIdFromToken(token as string)
     const user = await prisma.user.findUnique({where: {id}})
@@ -93,5 +93,5 @@ if(!isTokenLegit) return null
     
  const currentUser = {...user,credits:user.credits+credits}
 
-    return currentUser
+    return currentUser ?? null
 }

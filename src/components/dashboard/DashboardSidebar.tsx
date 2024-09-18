@@ -12,95 +12,104 @@ import { toast } from 'sonner';
 import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
 import { LogOut } from 'lucide-react';
 
-const DashboardSidebar     =  ({user}:any) => {
-  const router=useRouter()
-
+const DashboardSidebar = ({ user }: any) => {
+  const router = useRouter();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-const logout=async()=>{
-  const res=await fetch('/api/oauth/logout',{
-    method:'POST',
-  })
-  const data=await res.json() ?? {};
-  if(data?.message){
-    toast.success(data.message ?? 'Logged out successfully')
-    router.push('/')
-  }
-}
+
+  const logout = async () => {
+    const res = await fetch('/api/oauth/logout', { method: 'POST' });
+    const data = await res.json() ?? {};
+    if (data?.message) {
+      toast.success(data.message ?? 'Logged out successfully');
+      router.push('/');
+    }
+  };
+
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
-  
 
-  
   return (
     <div>
       {/* Mobile Sidebar Button */}
-      <button className="p-2 lg:hidden" onClick={toggleSidebar}>
+    <div className='w-full px-2 flex items-center justify-between'>  <button className="p-2 lg:hidden" onClick={toggleSidebar}>
         <Image src={MenuOpen} alt="Menu opener" className="w-8 h-8" />
       </button>
-
+      <h1 className=" pr-2 lg:hidden font-bold text-xl">Dashboard</h1>
+      </div>
       {/* Sidebar */}
       <div className={`fixed inset-0 z-50 bg-white transition-transform transform overflow-hidden ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 lg:relative lg:top-0 lg:w-[20vw] lg:block`}>
-      <div className="w-full flex items-center justify-between p-4">
+        <div className="w-full flex items-center justify-between p-4">
           <h1 className="font-bold text-2xl">Dashboard</h1>
           <button className="lg:hidden" onClick={toggleSidebar}>
             <Image src={MenuOpen} alt="Menu opener" className="w-8 h-8" />
           </button>
+          
         </div>
 
         <div className="w-full h-[1px] bg-gray-200" />
-        <DashboardAvatar user={user}/>
+        <DashboardAvatar user={user} />
         <div className="w-full mt-4 h-[1px] bg-gray-200" />
-<div className='w-full grid grid-cols-2'>
-     
-          <Button variant={'ghost'}  disabled={!user?.isSubscribed} className="h-16 w-fit mx-auto mt-2 text-sm flex items-center justify-start gap-4 font-semibold">
-           
-          <Link href={'/dashboard'}> <Image src={PlusIcon} alt="audi" className="h-6 w-6" />
 
-Audio        </Link>  </Button>
-        
-          <Button variant={'ghost'} disabled={!user?.isSubscribed}  className="h-16 w-fit mx-auto mt-2 text-sm flex items-center justify-start gap-4 font-semibold">
-          <Link href={'/dashboard/video-dubbing'}>
-          <Image src={PlusIcon} alt="Add new dubbing" className="h-6 w-6" />
-Video     </Link>     </Button>
-
-<Button variant={'ghost'} className="h-16 w-full mx-auto text-md flex items-center justify-start gap-4 font-semibold">
-  <Link href={'/dashboard/text-to-speech'}>
-    <Image src={PlusIcon} alt="Add new dubbing" className="h-6 w-6" />
-    TTS
-  </Link>
-</Button>
-
-  </div>
-{!user?.isSubscribed && (
-  <Alert variant="destructive" className="w-4/5 mx-auto mt-2">
-    <AlertTitle>Subscribe</AlertTitle>
-    <AlertDescription>
-      Please subscribe a plan to use dubbing feature
-    </AlertDescription>
-    </Alert>
-)}
-       <div className="w-full mt-2 flex justify-center">
-  <Accordion className="w-full" type="single" collapsible>
-    <AccordionItem value="item-1">
-      <AccordionTrigger className="text-gray-500">Dashboards</AccordionTrigger>
-      {dashboardLinks.map((dashboard, i) => (
-        <Link key={i} onClick={toggleSidebar} href={'/dashboard' + dashboard.path}>
-          <AccordionContent className="w-full">
-            <Button variant={'ghost'} className="h-16 w-full mx-auto my-0 text-md flex items-center justify-start gap-4 font-semibold">
-              <Image src={dashboard.icon} alt="Dashboard link" className="h-6 w-6" />
-              {dashboard.name}
+        {/* Buttons */}
+        <div className="w-full grid grid-cols-2 gap-2 px-4">
+          <Link href="/dashboard">
+            <Button variant={'ghost'} disabled={!user?.isSubscribed} className="h-12 w-full text-sm flex items-center gap-2 font-semibold">
+              <Image src={PlusIcon} alt="Audio" className="h-5 w-5" />
+              Audio
             </Button>
-          </AccordionContent>
-        </Link>
-      ))}
-    </AccordionItem>
-  </Accordion>
-</div>
-        <div className="w-full mt-4 h-[1px] bg-gray-200" />
-        <Button onClick={logout} variant={'destructive'} className="h-fit w-fit mx-auto mt-4 text-md flex items-center justify-start gap-4 font-semibold">
-          Log out <LogOut className="h-6 w-6" />
-        </Button>
+          </Link>
+
+          <Link href="/dashboard/video-dubbing">
+            <Button variant={'ghost'} disabled={!user?.isSubscribed} className="h-12 w-full text-sm flex items-center gap-2 font-semibold">
+              <Image src={PlusIcon} alt="Video" className="h-5 w-5" />
+              Video
+            </Button>
+          </Link>
+
+          <Link href="/dashboard/text-to-speech">
+            <Button variant={'ghost'} className="h-12 w-full text-sm flex items-center gap-2 font-semibold">
+              <Image src={PlusIcon} alt="TTS" className="h-5 w-5" />
+              TTS
+            </Button>
+          </Link>
+        </div>
+
+        {!user?.isSubscribed && (
+          <Alert variant="destructive" className="w-11/12 mx-auto mt-4">
+            <AlertTitle>Subscribe</AlertTitle>
+            <AlertDescription>
+              Please subscribe to a plan to use the dubbing feature
+            </AlertDescription>
+          </Alert>
+        )}
+
+        {/* Accordion Links */}
+        <div className="w-full mt-6 px-4">
+          <Accordion className="w-full" type="single" collapsible>
+            <AccordionItem value="item-1">
+              <AccordionTrigger className="text-gray-600">Dashboards</AccordionTrigger>
+              {dashboardLinks.map((dashboard, i) => (
+                <Link key={i} href={'/dashboard' + dashboard.path} onClick={toggleSidebar}>
+                  <AccordionContent className="w-full">
+                    <Button variant={'ghost'} className="h-12 w-full text-md flex items-center gap-2 font-semibold">
+                      <Image src={dashboard.icon} alt="Dashboard link" className="h-5 w-5" />
+                      {dashboard.name}
+                    </Button>
+                  </AccordionContent>
+                </Link>
+              ))}
+            </AccordionItem>
+          </Accordion>
+        </div>
+
+        {/* Logout */}
+        <div className="w-full mt-4 px-4">
+          <Button onClick={logout} variant={'destructive'} className="h-12 w-full text-md flex items-center gap-2 font-semibold">
+            Log out
+            <LogOut className="h-5 w-5" />
+          </Button>
+        </div>
       </div>
     </div>
   );
@@ -117,14 +126,14 @@ const dashboardLinks = [
 
 export const DashboardAvatar = ({ user }: { user: any }) => {
   return (
-    <div className="w-full flex items-center justify-around px-4 mt-4">
+    <div className="w-full flex items-center gap-4 px-4 mt-4">
       <Avatar>
         <AvatarImage src={user.picture} alt={user.name} />
         <AvatarFallback>{user.name.charAt(0).toUpperCase()}</AvatarFallback>
       </Avatar>
       <div>
-        <h1 className="font-semibold text-xl">{user.name ?? user.email}</h1>
-        <p className="text-secondary">{user.credits} Credit left</p>
+        <h1 className="font-semibold text-lg">{user.name ?? user.email}</h1>
+        <p className="text-sm text-gray-500">{user.credits} Credits left</p>
       </div>
     </div>
   );

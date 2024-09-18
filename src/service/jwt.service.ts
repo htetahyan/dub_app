@@ -32,8 +32,8 @@ export const isTokenExpired = async(token: string) => {
 const payload = await decodeJWTToken(token) as any
     return payload.exp < Math.floor(Date.now() / 1000)
 }
-export const verifyToken =  async(token: string) => {
-    try { const refreshToken= cookies().get('rf')?.value
+export const verifyToken =  async(token: string, refreshToken: string) => {
+    try {
     if(!token) return false
     if(await isTokenExpired(token) && await isTokenExpired(refreshToken!)) return false
 

@@ -6,8 +6,9 @@ import {getVideoFromId} from "~/service/elevenlab.service";
 
 export const GET = async (req:NextRequest) => {
   try {
-      const user=await getCurrentUser()
-      const dubbingId=req.nextUrl.searchParams.get('dubbingId')
+    const accessToken=req.cookies.get('access_token')?.value
+    const user = await getCurrentUser(accessToken)     
+     const dubbingId=req.nextUrl.searchParams.get('dubbingId')
       if (!user) return NextResponse.json({message:"Unauthorized"},{status:401})
       const video= await getVideoFromId(dubbingId as string)
 return new Response(video, { status: 200,headers:{'Content-Type': 'video/mp4'} })

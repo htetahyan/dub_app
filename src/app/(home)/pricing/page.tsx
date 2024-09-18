@@ -1,3 +1,4 @@
+import { cookies } from 'next/headers'
 import Image from 'next/image'
 import React from 'react'
 import { Spiral, Star, Vector14 } from '~/assets/exporter'
@@ -5,8 +6,9 @@ import Subscriptions from '~/components/home/Subscriptions'
 import { getCurrentUser } from '~/service/user.service'
 
 const page =async () => {
-  const user=await getCurrentUser()
-  return (
+  const accessToken=cookies().get('access_token')?.value
+  const user = await getCurrentUser(accessToken)
+    return (
     <div className='h-fit  justify-center items-center  relative overflow-x-hidden'>
         <Image src={Spiral} alt="icon" className='w-20 top-4 h-auto absolute right-8'   />  
 <div className='absolute left-16 top-0 h-10 w-10 bg-slate-500 rounded-full '/>

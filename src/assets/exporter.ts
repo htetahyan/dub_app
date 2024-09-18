@@ -24,6 +24,7 @@ import Speaker from './speaker.svg'
 import BgSignin from './bg-signin.svg'
 import LogoWhite from './Logo.svg'
 import BgFaq from './bg-faq.svg'
+import NotFound from './illu.svg'
 import MenuOpen from './menu_open.svg'
 import Spiral from './54.svg'
 import Vector14 from './Vector 14.png'
@@ -33,5 +34,6 @@ import Ig from './insta.svg'
 import twitter from './twitter.svg'
 export {
     Spiral,Star,Vector14,
+    NotFound,
     Fb, Ig, twitter,
     LogoWhite,Speaker,PlusIcon, BgSignin, Bag,Tune,Logout,DriveUpload,Speak, MenuOpen,BgFaq,Stars,Quote,Visual,Companies,SaasBg,Section1,Logo,loginBg,user_icon,dropDown_icon,arrow_right_icon,blurImg,like_outline_icon,like_fill,google_icon,icon}

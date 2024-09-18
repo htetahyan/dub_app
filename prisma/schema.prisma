@@ -1,10 +1,13 @@
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["tracing"]
+
 }
 
 datasource db {
   provider = "sqlserver"
   url      = env("AZURE_SQL_DB_STRING")
+
 }
 
 model User {

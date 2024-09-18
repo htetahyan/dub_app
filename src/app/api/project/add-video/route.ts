@@ -2,11 +2,12 @@ import { NextRequest, NextResponse } from "next/server";
 import { getCurrentUser } from "~/service/user.service";
 import {newDubbing} from "~/service/elevenlab.service";
 import {prisma} from "~/utils/utils";
+import { revalidateTag } from "next/cache";
 
 export const POST = async (request: NextRequest) => {
     try {
         const  token=request.cookies.get('access_token')?.value
-        const user=await getCurrentUser()
+        const user=await getCurrentUser(token)
         if (!user) return NextResponse.json({message:"Unauthorized"},{status:401})
         const form = await request.formData();
         const startTime=form.get('startTime') as string
@@ -46,6 +47,9 @@ export const POST = async (request: NextRequest) => {
 
      }
 if(!res?.dubbing_id){return NextResponse.json({message:'Something went wrong'},{status:500})}
+revalidateTag('user');
+
+
 return NextResponse.json({message:"success"},{status:200})
     } catch (error) {
         console.log(error)

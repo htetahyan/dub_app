@@ -2,21 +2,24 @@ import { redirect } from 'next/navigation'
 import React from 'react'
 import { getCurrentUser } from '~/service/user.service'
 import { prisma } from '~/utils/utils'
-import { AudioPlayer} from '~/components/dashboard/Player' // New components
 import dynamic from 'next/dynamic'
-import {getVideoFromId} from "~/service/elevenlab.service";
-import VideoPlayer from "~/components/dashboard/VideoPlayer";
+import VideoPlayer from '~/components/dashboard/VideoPlayer'
+import Image from 'next/image'
+import { Alert, AlertDescription, AlertTitle } from '~/components/ui/alert'
+import { cookies } from 'next/headers'
 
-const ProjectCard=dynamic(()=>import('~/components/dashboard/ProjectCard'),{ssr:false})
+const ProjectCard = dynamic(() => import('~/components/dashboard/ProjectCard'), { ssr: false })
+
 const page = async () => {
-  const user = await getCurrentUser()
+  const accessToken=cookies().get('access_token')?.value
+  const user = await getCurrentUser(accessToken)
   if (!user) redirect('/signin')
 
   const dubbingProjects = await prisma.dubbingProject.findMany({
     where: { userId: user.id },
     select: {
       id: true,
-      dubbingId:true,
+      dubbingId: true,
       name: true,
       createdAt: true,
       uploadType: true,
@@ -31,35 +34,35 @@ const page = async () => {
     }
   })
 
-
-// Filter out null or unresolved promises
-
-// Combine with existing projects and remove duplicates
-
-
-
   return (
-    <div className='w-full p-4 py-8'>
+    <div className='w-[full] p-4 py-8'>
       <h1 className='font-bold text-3xl mb-4'>My Projects</h1>
       <p className='text-gray-600 mb-6'>Here are your projects</p>
-      <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6'>
-        {dubbingProjects?.map((project:any, i) => (
-          <div key={i} className='relative w-full h-fit  rounded-lg overflow-hidden shadow-lg'>
+      <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
+        {dubbingProjects?.length === 0 && (
+          <div className='flex flex-col mx-auto lg:col-span-3 col-span-2 items-center justify-center w-full h-full text-center p-6'>
+      <Alert>
+        <AlertTitle>No projects found</AlertTitle>
+        <AlertDescription>
+          You have not created any projects. Create one now
+        </AlertDescription>
+        </Alert>
+          </div>
+        )}
+        {dubbingProjects?.map((project: any, i) => (
+          <div key={i} className='relative w-full h-fit rounded-lg overflow-hidden shadow-lg'>
             <div className='flex justify-center items-center h-fit'>
-              {project.projectType === 'ATA' ? (
+              {project.projectType === 'ATA' || project.projectType === 'TTS' ? (
                 <ProjectCard project={project} />
               ) : (
                 <VideoPlayer project={project} />
               )}
             </div>
-        
-       
           </div>
         ))}
       </div>
     </div>
   )
-  
 }
 
 export default page

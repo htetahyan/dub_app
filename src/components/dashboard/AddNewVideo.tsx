@@ -167,6 +167,7 @@ const DubbingForm = () => {
             <label className="block font-semibold">File Upload</label>
             <input
               type="file"
+              accept="video/*"
               name="file"
               onChange={(e) => formik.setFieldValue('file', e!.target!.files![0])}
               className="w-full border p-2 rounded"

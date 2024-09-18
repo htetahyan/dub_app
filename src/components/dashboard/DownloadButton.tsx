@@ -5,7 +5,6 @@ import { Button } from '../ui/button'
 import React from 'react'
 
 export const DownloadButton = ({ url, project }: { url: string ,project:any}) => {
-  const [open, setOpen] = React.useState(false)
     const downloadMp3=async()=>{
       const res=await fetch(url, {
         method: 'GET',

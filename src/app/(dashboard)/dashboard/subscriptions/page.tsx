@@ -9,8 +9,10 @@ import { getCurrentPricing } from '~/service/server.service'
 import { getCurrentUser } from '~/service/user.service'
 
 const page = async() => {
- const user=await getCurrentUser()
- if(user?.isEmailVerified===true){
+  const accessToken=cookies().get('access_token')?.value
+
+  const user = await getCurrentUser(accessToken)
+   if(user?.isEmailVerified===true){
 
 
   redirect('/dashboard/settings')

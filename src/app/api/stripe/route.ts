@@ -4,7 +4,8 @@ import { createCheckoutSession } from "~/service/payment.service";
 import { getCurrentUser } from "~/service/user.service";
 
 export const POST= async(request:NextRequest)=>{
-    const user=await getCurrentUser()
+    const accessToken=request.cookies.get('access_token')?.value
+    const user = await getCurrentUser(accessToken)    
     if(!user) redirect(process.env.NEXT_PUBLIC_BASE_URL!+"/signin")
     const priceId = "price_1PyWQmJM8edFj1dH4lKM99go"
     try {

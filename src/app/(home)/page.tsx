@@ -9,11 +9,13 @@ import Features from '~/components/home/features';
 
 import Subscriptions from '~/components/home/Subscriptions';
 import { getCurrentUser } from '~/service/user.service';
+import { cookies } from 'next/headers';
 
 
 const Page = async () => {
-    const user=await getCurrentUser()
-    return (<>
+    const accessToken=cookies().get('access_token')?.value
+    const user = await getCurrentUser(accessToken) 
+       return (<>
         <div className=' h-fit  w-full relative overflow-hidden max-w-full'>
             <Script
                 id="faq-schema"

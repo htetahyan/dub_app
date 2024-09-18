@@ -1,3 +1,4 @@
+import { cookies } from 'next/headers'
 import React from 'react'
 import ProjectCard from '~/components/dashboard/ProjectCard'
 import TTSForm from '~/components/dashboard/TTSForm'
@@ -5,7 +6,8 @@ import { getCurrentUser } from '~/service/user.service'
 import { prisma } from '~/utils/utils'
 
 const page = async() => {
-    const user=await getCurrentUser()
+  const accessToken=cookies().get('access_token')?.value
+  const user = await getCurrentUser(accessToken)
     const ttsProjects=await prisma.dubbingProject.findMany({where:{user:{id:user?.id},projectType:'TTS'},take:5,orderBy:{createdAt:'desc'}})
 
   return (
