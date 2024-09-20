@@ -6,8 +6,8 @@ import ContactForm from '~/components/ContactForm'
 const Page = () => {
   return (
     <div className='h-fit flex justify-center items-center w-full'>
-      <div className='w-full relative min-h-screen grid'><div className='relative text-center'>
-        <h1 className='text-5xl font-secondary fontse'>
+      <div className='w-full relative min-h-screen grid z-10'><div className='relative text-center'>
+        <h1 className='lg:text-5xl relative  text-2xl font-secondary fontse'>
           Keep in touch <span className='relative inline-block'>with
             <Image
               src={Vector14}
@@ -17,7 +17,7 @@ const Page = () => {
             />
           </span> us
         </h1>
-      <div className='flex justify-center flex-col w-2/3 items-center mx-auto gap-10 mt-10 '> <p className='text-xl font-secondary w-1/2 break-words text-center  '>
+      <div className='flex justify-center flex-col lg:w-2/3 w-3/4 items-center mx-auto gap-10 mt-5 lg:mt-10 '> <p className='text-xl font-secondary w-1/2 break-words text-center  '>
       
         if you have any question or just want to know about our software , just say hello!</p>
         <div className='flex gap-4 '>
@@ -29,9 +29,9 @@ const Page = () => {
         <ContactForm/>
         </div> 
  </div>        <Image src={Spiral} alt="icon" className='w-20 top-4 h-auto absolute right-8'   />  
-<div className='absolute left-16 top-0 h-10 w-10 bg-slate-500 rounded-full '/>
+<div className='absolute left-16 top-0 z-0 h-10 w-10 bg-slate-500 rounded-full '/>
  <Image src={Star} alt="icon" className='w-20 h-auto absolute left-8 bottom-40'   />  
- <div className='w-full flex justify-around'>
+ <div className='w-full lg:flex justify-around'>
   <div className=''>
     <h2 className='text-xl '>Contact Info</h2>
     <h1 className='text-3xl  font-semibold'>We are here to assit you!</h1>

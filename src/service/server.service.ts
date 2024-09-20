@@ -206,7 +206,8 @@ export const getCachedProjects=unstable_cache(async (token) => {
               createdAt: 'desc',
             },
             where: {
-              userId:userId
+              userId:userId,
+              projectType:'ATA'
             },
       })
     return projects

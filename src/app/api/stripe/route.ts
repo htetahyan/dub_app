@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { NextRequest, NextResponse } from "next/server";
 import { createCheckoutSession } from "~/service/payment.service";
 import { getCurrentUser } from "~/service/user.service";
+import {revalidateTag} from "next/cache";
 
 export const POST= async(request:NextRequest)=>{
     const accessToken=request.cookies.get('access_token')?.value
@@ -10,7 +11,7 @@ export const POST= async(request:NextRequest)=>{
     const priceId = "price_1PyWQmJM8edFj1dH4lKM99go"
     try {
         const session=await createCheckoutSession(user,priceId)
-        
+        revalidateTag('profile')
         return NextResponse.json({url:session.url}, { status: 200 });
     } catch (error) {
         console.log(error)

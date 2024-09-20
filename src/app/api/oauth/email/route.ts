@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
         
         if (new Date(user?.emailTokenSentAt!).getTime() > Date.now() - 3 * 60 * 1000) {
             console.log("Attempt to resend within 3 minutes.");
-            return NextResponse.json({message: 'Please wait for 3 min'}, {status: 401});
+            return NextResponse.json({message: 'message already sent! Try After 3 min '}, {status: 401});
         }
         const emailToken = generateEmailVerificationToken();
          await prisma.user.update({

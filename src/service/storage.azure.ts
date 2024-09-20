@@ -21,6 +21,8 @@ export const uploadArrayBuffer = async (file:any,name:string) => {
         const blockBlobClient = containerClient.getBlockBlobClient(name);
     
         const uploadResponse = await blockBlobClient.uploadData(buffer);
+    console.log(uploadResponse);
+    console.log(name);
     
         return name;
       } catch (err) {

@@ -14,7 +14,7 @@ import { cookies } from 'next/headers';
 
 const Page = async () => {
     const accessToken=cookies().get('access_token')?.value
-    const user = await getCurrentUser(accessToken) 
+    const user = await getCurrentUser(accessToken) ?? {}
        return (<>
         <div className=' h-fit  w-full relative overflow-hidden max-w-full'>
             <Script

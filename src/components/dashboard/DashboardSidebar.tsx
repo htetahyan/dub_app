@@ -53,7 +53,7 @@ const DashboardSidebar = ({ user }: any) => {
 
         {/* Buttons */}
         <div className="w-full grid grid-cols-2 gap-2 px-4">
-          <Link href="/dashboard">
+          <Link href="/dashboard/audio-dubbing">
             <Button variant={'ghost'} disabled={!user?.isSubscribed} className="h-12 w-full text-sm flex items-center gap-2 font-semibold">
               <Image src={PlusIcon} alt="Audio" className="h-5 w-5" />
               Audio

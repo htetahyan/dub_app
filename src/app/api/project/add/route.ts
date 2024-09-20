@@ -29,22 +29,21 @@ export const POST = async (request: NextRequest) => {
         const translateTo = formData.get('translateTo') as string;
         const voice = formData.get('voice') as string;
         const projectName = formData.get('projectName') as string;
-
+        const duration= Math.ceil(parseInt(formData.get('audioDuration')as string))
+        if(duration<0 || duration===null) return NextResponse.json({message:'Invalid audio duration. server cant detect'},{status:500});
         if (!file || !fileName || !currentLanguage || !translateTo || !voice || !projectName) {
             throw new Error('Missing required fields');
         }
 
-        // Convert Blob to Buffer and Readable Stream
 const pricing=await getCurrentPricing(userId);
-const audioUrl = await processDubbingAndSynthesis(fileName, file, voice, currentLanguage, translateTo);
-        // Get audio duration and calculate credits
-        const duration = await getDurationFromUrl(process.env.AZURE_BLOB_URL+"/"+audioUrl);
+const credits = duration;
+if(pricing.credits< credits) return NextResponse.json({message:'Insufficient credits for this project. Try with lower audio duration or upgrade your subscription'},{status:500});
 
-        if(!duration || !isNumber(duration as any)) return NextResponse.json({message:'Failed to get audio duration'},{status:500});
-        const durationInMinutes = Math.ceil(Number(duration )/60); // Rounds up to nearest minute
-        const credits = durationInMinutes;
-        if(pricing.credits< credits) return NextResponse.json({message:'Insufficient credits for this project. Try with lower audio duration or upgrade your subscription'},{status:500});
-        
+const audioUrl = await processDubbingAndSynthesis(fileName, file, voice, currentLanguage, translateTo);
+
+        // Get audio duration and calculate credits
+      
+   
 
         // Process dubbing and synthesis
   
@@ -59,7 +58,7 @@ const audioUrl = await processDubbingAndSynthesis(fileName, file, voice, current
                     translateTo,
                     voice,
                     url: audioUrl,
-                    durationMinutes: durationInMinutes || 0,
+                    durationMinutes: duration || 0,
                     uploadType: 'FILE',
                     projectType: 'ATA',
                     creditCost: credits,

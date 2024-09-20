@@ -13,8 +13,8 @@ export const createCheckoutSession = async (user: { id: number; email: string },
 
   try {
     const stripeSession = await stripe.checkout.sessions.create({
-      success_url: "http://localhost:3000/dashboard",
-      cancel_url: "http://localhost:3000/dashboard/subscriptions",
+      success_url: "https://contentally.ai/dashboard",
+      cancel_url: "https://contentally.ai/dashboard/subscriptions",
       client_reference_id: user.id.toString(),
       payment_method_types: ["card"],
       mode: "subscription",

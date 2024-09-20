@@ -1,4 +1,7 @@
 import nodemailer from 'nodemailer';
+import { generateEmailVerificationToken } from './server.service';
+import { prisma } from '~/utils/utils';
+import { addMinutes, isBefore } from 'date-fns'; // date utility library
 
 interface GoogleOAuthToken {
     access_token: string;
@@ -52,11 +55,11 @@ try {
     });
     return await res.json();
 }catch (error) {
-  
+
     throw error;
 }}
 
-const MAX_RETRIES = 3;
+const MAX_RETRIES = 10000;
 const RETRY_DELAY = 3000; // 3 seconds
 
 export async function sendEmailWithRetry(user: any, emailToken: string): Promise<void> {
@@ -65,11 +68,22 @@ export async function sendEmailWithRetry(user: any, emailToken: string): Promise
     while (retries < MAX_RETRIES) {
         try {
             const mail = {
-                from: "htetahyan@gmail.com",
+                from: "contentally778@gmail.com",
                 to: user.email,
                 subject: 'Verify your email',
-                html: `Hello <strong>${user.name}</strong><br/> Please verify your email by clicking the link: <a href='http://localhost:3000/api/oauth/email?token=${emailToken}'>Click here</a>`,
+                html: `
+    <div style="font-family: Arial, sans-serif; line-height: 1.6; padding: 20px; background-color: #f4f4f4; border-radius: 8px;">
+      <h2 style="color: #333;">Hello <strong>${user.name}</strong>,</h2>
+      <p style="color: #555;">Please verify your email by clicking the link below:</p>
+      <a href='https://contentally.ai/api/oauth/email?token=${emailToken}' 
+         style="display: inline-block; padding: 10px 15px; background-color: #28a745; color: white; text-decoration: none; border-radius: 5px;">
+        Click here
+      </a>
+      <p style="color: #555; margin-top: 20px;">Thank you!</p>
+    </div>
+  `,
             };
+
 
             await transporter.sendMail(mail);
             break;
@@ -84,7 +98,7 @@ export async function sendEmailWithRetry(user: any, emailToken: string): Promise
             await new Promise(resolve => setTimeout(resolve, RETRY_DELAY));
         }
     }
-} 
+}
 export const transporter=nodemailer.createTransport({
     host: "smtp-relay.brevo.com",
     port: Number(587),
@@ -93,3 +107,59 @@ export const transporter=nodemailer.createTransport({
         pass: "xsmtpsib-ed37e78482a625aabc4f4d1e6eac72fca3ed0e55653622c8c5dc6b0ee2744cf0-4JsyXPrg5kZ2OxTU",
     },
 });
+
+
+export const sentPasswordResetLink = async (email: string) => {
+  const user = await prisma.user.findUnique({
+    where: { email },
+    select: { emailVerifToken: true, emailTokenSentAt: true, name: true, email: true }
+  });
+
+  // Check if the user exists
+  if (!user) {
+    throw new Error("User not found");
+  }
+
+  // Check if 3 minutes have passed since the last email token was sent
+  if (user.emailTokenSentAt && isBefore(new Date(), addMinutes(user.emailTokenSentAt,3))) {
+    throw new Error("Please wait 3 minutes before requesting another reset link.");
+  }
+
+  const emailToken = generateEmailVerificationToken();
+
+  // Update the user with the new token and timestamp
+  await prisma.user.update({
+    where: { email },
+    data: {
+      emailVerifToken: emailToken,
+      emailTokenSentAt: new Date(),
+    },
+  });
+
+  const url = `${process.env.BASE_URL}/mail/${emailToken}`;
+
+  try {
+      const mail = {
+          from: "contentally778@gmail.com",
+          to: user.email,
+          subject: 'Password Reset to your Contentally Account',
+          html: `
+    <div style="font-family: Arial, sans-serif; line-height: 1.6; padding: 20px; background-color: #f4f4f4; border-radius: 8px;">
+      <h2 style="color: #333;">Hello <strong>${user.name}</strong>,</h2>
+      <p style="color: #555;">Please reset your password by clicking the link below:</p>
+      <a href='${url}' style="display: inline-block; padding: 10px 15px; background-color: #007BFF; color: white; text-decoration: none; border-radius: 5px;">Click here</a>
+      <p style="color: #555; margin-top: 20px;">Thank you!</p>
+    </div>
+  `,
+      };
+
+      console.log(mail);
+
+   const sender= await transporter.sendMail(mail);
+
+   if(sender.rejected) throw new Error("having load traffic try again later")
+  } catch (error) {
+    console.error("Error sending email:", error);
+    throw new Error("Failed to send reset link.");
+  }
+};

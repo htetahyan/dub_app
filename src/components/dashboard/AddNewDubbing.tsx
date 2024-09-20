@@ -2,15 +2,9 @@
 import React, { useState } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import useSWRMutation from 'swr/mutation'
+import useSWRMutation from 'swr/mutation';
 import { Input } from '../ui/input';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '~/components/ui/select';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '~/components/ui/select';
 import ListVoicesSelect from './ListVoicesSelect';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
 import { toast } from 'sonner';
@@ -25,7 +19,6 @@ export const Languages = [
   { name: 'Korean', code: 'ko-KR' },
   { name: 'French', code: 'fr-FR' },
   { name: 'German', code: 'de-DE' },
- 
   { name: 'Russian', code: 'ru-RU' },
   { name: 'Spanish', code: 'es-ES' },
 ];
@@ -36,19 +29,21 @@ const schema = Yup.object().shape({
   currentLanguage: Yup.string().required('Current Language is required'),
   translateTo: Yup.string().required('Translate To is required'),
   voice: Yup.string().required('Voice is required'),
-  sourceFiles: Yup.mixed(),
-  
+  sourceFile: Yup.mixed(),
 });
 
 const AddNewDubbing = () => {
-  const { trigger, isMutating } = useSWRMutation('/api/project/add', (url, { arg }: { arg: FormData }) => fetch(url, {
-    method: 'POST',
-    body: arg,
-  }).then(res => res.json()));
+  const { trigger, isMutating } = useSWRMutation('/api/project/add', (url, { arg }: { arg: FormData }) =>
+    fetch(url, {
+      method: 'POST',
+      body: arg,
+    }).then(res => res.json())
+  );
 
   const [activeTab, setActiveTab] = useState('file');
-  
-const router=useRouter()
+  const [audioDuration, setAudioDuration] = useState<number | null>(null);
+
+  const router = useRouter();
   const formik = useFormik({
     initialValues: {
       projectName: '',
@@ -60,36 +55,52 @@ const router=useRouter()
     },
     validationSchema: schema,
     onSubmit: async (values) => {
-      const file=values.sourceFile[0] as any;
-      if(file.size>52428800){
+      
+let duration;
+      const file = values.sourceFile[0] as any;
+
+      if (file.size > 52428800) {
         toast.error('File size should be less than 50MB');
-        return
+        return;
       }
+      const promiseDuration=await getAudioDuration(file);
+      if(promiseDuration )   duration=promiseDuration;
+      
+      // Calculate audio duration
+   if(duration === null) {
+     toast.error('Audio duration cannot be calculated! Make sure you have selected a valid audio file.');
+   }
+
       const formData = new FormData();
       formData.append('projectName', values.projectName);
       formData.append('currentLanguage', values.currentLanguage);
       formData.append('translateTo', values.translateTo);
-      formData.append('voice', values.voice );
+      formData.append('voice', values.voice);
       formData.append('sourceFile', file);
       formData.append('fileName', file.name);
       formData.append('youtubeUrl', values.youtubeUrl);
-  if(!values.sourceFile && !values.youtubeUrl){
-    toast.error('You must select a source file or youtube url');
-    return
-  }
-  toast.loading('Creating project...');
+      if (duration) {
+        
+        formData.append('audioDuration', duration.toString());
+      }
+      if (!values.sourceFile && !values.youtubeUrl) {
+        toast.error('You must select a source file or YouTube URL');
+        return;
+      }
 
-  await trigger(formData).then((res) => {
-    toast.dismiss();
-    toast.success(res.message || 'Project created successfully');
-  }).catch((error) => {
-    toast.error(error.message || 'Something went wrong while creating the project');
-  }).finally(() => {
-    router.refresh()
-  });
-  
-  
-   
+      toast.loading('Creating project...');
+      
+      await trigger(formData)
+        .then((res) => {
+          toast.dismiss();
+          toast.success(res.message || 'Project created successfully');
+        })
+        .catch((error) => {
+          toast.error(error.message || 'Something went wrong while creating the project');
+        })
+        .finally(() => {
+          router.refresh();
+        });
     },
   });
 
@@ -101,10 +112,48 @@ const router=useRouter()
       formik.setFieldValue('sourceFile', null);
     }
   };
+  const getAudioDuration = async(file: File): Promise<number | null> => {
+    return new Promise((resolve, reject) => {
+      const audio = new Audio();
+      const reader = new FileReader();
+      
+      // Handle errors in FileReader
+      reader.onerror = () => {
+        console.error('Error reading the file.');
+        reject('Error reading the file.');
+      };
+      
+      reader.onloadend = () => {
+        const blob = new Blob([reader.result as ArrayBuffer], { type: file.type });
+        const url = URL.createObjectURL(blob);
+        
+        audio.src = url;
+        
+        const handleLoadedMetadata = () => {
+          URL.revokeObjectURL(url); // Clean up after ourselves
+setAudioDuration(audio.duration);
+
+          resolve(audio.duration);
+        };
+  
+        const handleError = () => {
+          URL.revokeObjectURL(url); // Clean up after ourselves
+          console.error('Error loading the audio.');
+          reject('Error loading the audio.');
+        };
+  
+        audio.addEventListener('loadedmetadata', handleLoadedMetadata);
+        audio.addEventListener('error', handleError);
+      };
+      
+      reader.readAsArrayBuffer(file);
+    });
+  };
+  
+  
 
   return (
-
-    <div className='lg:w-2/3  w-full mx-auto p-2 lg:p-8 bg-white shadow-lg rounded-lg'>
+    <div className='lg:w-2/3 w-full mx-auto p-2 lg:p-8 bg-white shadow-lg rounded-lg'>
       <h1 className='text-3xl font-bold mb-4'>Create a New Dubbing Project</h1>
       <p className='mb-6 text-gray-600'>Convert your video or audio into multiple languages with voice cloning.</p>
 
@@ -186,10 +235,13 @@ const router=useRouter()
                   type='file'
                   accept='.mp3, .wav'
                   name='sourceFile'
-                  onChange={(event) => formik.setFieldValue('sourceFile', event.currentTarget.files)}
+                  onChange={(event) => {
+                    formik.setFieldValue('sourceFile', event.currentTarget.files);
+                    setAudioDuration(null); // Reset audio duration when a new file is selected
+                  }}
                   className='w-full p-2 border border-gray-300 rounded-md shadow-sm'
                 />
-                <p className='mt-1 text-sm text-gray-500'>Supports MP3, and WAV files.</p>
+                <p className='mt-1 text-sm text-gray-500'>Supports MP3 and WAV files.</p>
               </div>
               {formik.errors.sourceFile && formik.touched.sourceFile && (
                 <p className='text-red-500 text-sm'>{formik.errors.sourceFile}</p>
@@ -218,9 +270,7 @@ const router=useRouter()
           Create new project
         </Button>
       </form>
-
     </div>
-
   );
 };
 

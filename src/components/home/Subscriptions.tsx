@@ -3,19 +3,21 @@ import React from 'react'
 import { Button } from '../ui/button'
 import { Input } from '../ui/input'
 import { useRouter } from 'next/navigation'
+import {toast} from "sonner";
 
 const Subscriptions = ({user}:any) => {
     const router=useRouter()
     const goToPayment=async()=>{
+        toast.loading('Redirecting to payment gateway...',{duration:3000})
         if(!user)  router.push('/signin')
-        const res=await fetch('/api/stripe',{
+        else {const res=await fetch('/api/stripe',{
             method:'POST',
 
         })
         const data=await res.json()
 if(data?.url){
     window.location.href=data.url
-}       
+}       }
     }
   return (
     <div className='w-full h-fit mt-5'>

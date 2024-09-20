@@ -1,31 +1,32 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
   previewFeatures = ["tracing"]
-
 }
 
 datasource db {
   provider = "sqlserver"
   url      = env("AZURE_SQL_DB_STRING")
-
 }
 
 model User {
-  id                    Int                   @id @default(autoincrement())
-  name                  String
-  email                 String                @unique
-  emailHash             String?               @unique
-  createdAt             DateTime              @default(now())
-  emailTokenSentAt      DateTime              @default(now())
-  password              String
-  emailVerifToken       String?
-  isEmailVerified       Boolean               @default(false)
-  provider              String
-  picture               String                @default("https://example.com/default-picture.jpg")
-  isSubscribed          Boolean               @default(false)
-  credits               Int                   @default(10)
-  subscriptions         Subscription[]
-  dubbingProjects       DubbingProject[]
+  id               Int              @id @default(autoincrement())
+  name             String
+  email            String           @unique
+  emailHash        String?
+  createdAt        DateTime         @default(now())
+  emailTokenSentAt DateTime         @default(now())
+  password         String
+  emailVerifToken  String?
+  nameChangeAt     DateTime?
+  passwordChangeAt DateTime?
+  isEmailVerified  Boolean          @default(false)
+  provider         String
+  picture          String           @default("https://example.com/default-picture.jpg")
+  isSubscribed     Boolean          @default(false)
+  credits          Int              @default(10)
+  subscriptions    Subscription[]
+  dubbingProjects  DubbingProject[]
+
   subscriptionHistories SubscriptionHistory[]
   payments              Payment[]
   auditTrails           AuditTrail[]

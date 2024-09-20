@@ -20,7 +20,7 @@ export const GET = async (request: NextRequest) => {
 
         revalidateTag('profile')
 
-return NextResponse.redirect(process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000')}
+return NextResponse.redirect(process.env.NEXT_PUBLIC_BASE_URL || 'https://contentally.ai')}
     catch (error) {
 
         // @ts-ignore

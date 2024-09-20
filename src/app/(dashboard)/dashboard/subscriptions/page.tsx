@@ -12,7 +12,7 @@ const page = async() => {
   const accessToken=cookies().get('access_token')?.value
 
   const user = await getCurrentUser(accessToken)
-   if(user?.isEmailVerified===true){
+   if(!user?.isEmailVerified){
 
 
   redirect('/dashboard/settings')

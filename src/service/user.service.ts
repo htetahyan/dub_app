@@ -82,6 +82,10 @@ const refreshToken=cookies().get('refresh_token')?.value
 
 if(!isTokenLegit) return null
   const id= await extractUserIdFromToken(token as string)
+    const currentUser = await cachedUser(id)
+    return currentUser ?? null
+}
+const cachedUser=unstable_cache(async(id)=>{
     const user = await prisma.user.findUnique({where: {id}})
     let credits=0
     if(user?.isSubscribed){
@@ -90,8 +94,7 @@ if(!isTokenLegit) return null
     }
     if(!user) return null
     console.log(credits);
-    
- const currentUser = {...user,credits:user.credits+credits}
 
-    return currentUser ?? null
-}
+    const currentUser = {...user,credits:user.credits+credits}
+return currentUser
+},['user'],{tags:['user']})

@@ -22,36 +22,43 @@ if (!process.env.AZURE_SPEECH_API_KEY || !process.env.AZURE_SPEECH_REGION) {
 }
 
 
-export const convertMp3ToWav = async (file: Blob,extension:string) => {
+export const convertMp3ToWav = async (file: Blob, extension: string): Promise<string> => {
   if (!file) {
     throw new Error('The file Blob is undefined or null');
   }
 
-  const tempFilePath = join(tmpdir(), 'temp.'+extension);
-  const outputFilePath = join(tmpdir(), 'converted.wav');
+  // Generate file paths
+  const tempFilePath = join(tmpdir(), `temp.${extension}`);
+  const outputFilePath = join(tmpdir(), `${Math.random().toString(36).substr(2)}.wav`);
 
-  // Convert Blob to buffer
   const fileBuffer = Buffer.from(await file.arrayBuffer());
-  await writeFileAsync(tempFilePath, fileBuffer);
 
-  return new Promise<string>((resolve, reject) => {
-    ffmpeg(tempFilePath)
-      .inputFormat(extension)
-      .outputFormat(extension==='mp3'?'wav':'mp3')
-      .on('error', (err) => {
-        console.error('Error during ffmpeg conversion:', err);
-        reject(err);
-      })
-      .on('end', async () => {
-        try {
-          await unlinkAsync(tempFilePath); // Remove the temporary file
-          resolve(outputFilePath);
-        } catch (err) {
+  try {
+    await writeFileAsync(tempFilePath, fileBuffer);
+
+    // Return a promise that resolves when the conversion is done
+    return new Promise<string>((resolve, reject) => {
+      ffmpeg(tempFilePath)
+        .inputFormat(extension)
+        .outputFormat('wav')
+        .on('error', (err) => {
+          console.error('Error during ffmpeg conversion:', err);
           reject(err);
-        }
-      })
-      .save(outputFilePath);
-  });
+        })
+        .on('end', async () => {
+          try {
+            await unlinkAsync(tempFilePath); // Remove the temporary file
+            resolve(outputFilePath);
+          } catch (err) {
+            reject(err);
+          }
+        })
+        .save(outputFilePath);
+    });
+  } catch (err: any) {
+    console.error('Error during file operation:', err);
+    throw new Error(`File operation failed: make sure your mp3 file is valid.`);
+  }
 };
 
 export const MakeFileFromPath = async (path: string): Promise<Buffer> => {

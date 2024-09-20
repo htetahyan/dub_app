@@ -10,21 +10,19 @@ const Footer = () => {
     return (
         <>
             {/* Footer section */}
-            <div className='lg:h-[30vh]  w-full relative overflow-hidden mt-20 bg-black text-white flex flex-col justify-center gap items-center'>
-                <h1 className='lg:text-3xl text-xl font-bold text-center'>Deliver your best work with dubbyai.com</h1>
+            <div className='lg:h-[30vh]  w-full relative overflow-hidden mt-20   flex flex-col justify-center gap items-center'>
+                <h1 className='lg:text-3xl text-xl font-bold text-center'>Deliver your best work with contentally.ai</h1>
                 <p className='text-center'>No credit card needed ✦ Unlimited time on Free plan</p>
                 <Button variant={'default'} className='bg-default hover:bg-default/90 rounded-3xl'>Get Started</Button>
             </div>
 
             {/* FAQ section */}
-            <div className='lg:h-[70vh] p-2 w-full grid lg:grid-cols-2  lg:place-items-center overflow-x-hidden'>
+            <div className='lg:h-[50vh]  p-2 w-full lg:grid lg:grid-cols-2  lg:place-items-center overflow-x-hidden'>
                 <div className='place-self-center'>
                     <Badge>FAQ</Badge>
-                    <h1 className='text-5xl mt-4 font-bold w-2/3'>Frequently asked questions</h1>
+                    <h1 className='lg:text-5xl text-3xl mt-4 font-bold w-2/3'>Frequently asked questions</h1>
                   <Link href={'/contact'} className='text-default hover:text-default/90'>   <Button variant={'outline'} className='mt-4'> Talk to us</Button> </Link>
-                    <div className='w-full flex justify-end'>
-                        <Image src={BgFaq} alt="icon" className='w-48 h-auto flex justify-end' />
-                    </div>
+
                 </div>
                 <div className='lg:w-3/4 w-full'>
                     <Accordion type="single" collapsible className="w-full">
@@ -39,7 +37,7 @@ const Footer = () => {
                     </Accordion>
                 </div>
             </div>
-            <footer className="bg-black text-white py-8 w-full">
+            <footer className="outline-1 py-8 w-full">
       <div className="container mx-auto px-4 md:px-8 lg:px-16 w-full">
         {/* Responsive grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
@@ -49,15 +47,15 @@ const Footer = () => {
               {/* Replace with your logo image */}
               <Image
                 src={LogoWhite} // Replace with the correct path to your logo
-                alt="Dubby AI Logo"
-                width={100}
-                height={30}
+                alt=" AI Logo"
+              className={'w-8'}
               />
+                <h1 className="text-2xl font-bold ml-2"> Contentally</h1>
             </div>
             <p className="text-sm">
               Building collaboration tools for organizations of all shapes and sizes. Hiring is just the start.
             </p>
-            <p className="text-xs">&copy; 2024 Dubby AI</p>
+            <p className="text-xs">&copy; 2024 Contentally AI</p>
           </div>
 
           {/* Links */}

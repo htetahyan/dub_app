@@ -1,32 +1,68 @@
+'use client'
 import React from 'react';
 import { Button } from "~/components/ui/button";
 import Link from "next/link";
 import Auth_Btn from "~/components/AuthBtn";
-import { getUserProfile } from "~/service/server.service";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "~/components/ui/dropdown-menu";
-import { cookies } from "next/headers";
+import { Drawer, DrawerTrigger, DrawerContent, DrawerHeader, DrawerTitle, DrawerDescription, DrawerFooter, DrawerClose } from "~/components/ui/drawer"; // Import Drawer components
 import Image from 'next/image';
 import { Logo } from '~/assets/exporter';
+import { Menu } from 'lucide-react'; // Import a menu icon
 
-const Header = async () => {
-    const token = cookies().get('access_token')?.value;
-    const user = token ? await getUserProfile(token) : null;
-console.log(user)   ;
-
+const Header = ({ user }: { user: any }) => {
     return (
-        <div className={'px-8 w-full max-w-full overflow-x-hidden flex justify-between items-center h-[90px]'}>
-            <div className='w-[100px] h-auto relative'>
-                <Image src={Logo} alt="Logo" className='w-full h-full' />
+        <div className='px-8 w-full max-w-full overflow-x-hidden flex justify-between items-center h-[90px]'>
+            <div className='flex items-center gap-2'>
+                <Image src={Logo} alt="Logo" className='w-8 h-fit' />
+                <h1 className='text-2xl font-bold text-[#6236F5] font-primary'>Contentally</h1>
             </div>
-            <div className='grid grid-flow-col gap-5'>
+
+            {/* Drawer Trigger Button for Mobile */}
+            <div className="md:hidden">
+                <Drawer >
+                    <DrawerTrigger>
+                        <Button variant="outline" className="flex items-center">
+                            <Menu size={24} />
+                        </Button>
+                    </DrawerTrigger>
+                    <DrawerContent>
+                        <DrawerHeader>
+                            <DrawerTitle>Menu</DrawerTitle>
+                            <DrawerDescription>Select an option below.</DrawerDescription>
+                        </DrawerHeader>
+                        <div className='flex flex-col p-4'>
+                            {MenuItems.map((item) => (
+                                <Link href={item.link} className='font-semibold text-gray-600 font-primary py-2' key={item.name}>
+                                    {item.name}
+                                </Link>
+                            ))}
+                            <div>
+                                {user ? (
+                                    <Link href='/dashboard' className='font-semibold text-gray-600 font-primary py-2'>Dashboard</Link>
+                                ) : (
+                                    <Auth_Btn user={user} />
+                                )}
+                            </div>
+                        </div>
+                        <DrawerFooter>
+                            <DrawerClose>
+                                <Button variant="outline">Close</Button>
+                            </DrawerClose>
+                        </DrawerFooter>
+                    </DrawerContent>
+                </Drawer>
+            </div>
+
+            {/* Desktop Menu */}
+            <div className={`hidden md:flex grid-flow-col gap-5`}>
                 {MenuItems.map((item) => (
-                    <Link href={item.link} className={'font-semibold text-gray-600 font-primary'} key={item.name}>
+                    <Link href={item.link} className='font-semibold text-gray-600 font-primary' key={item.name}>
                         {item.name}
                     </Link>
                 ))}
             </div>
-            <div>
-                {user ? <Link href={'/dashboard'} className={'font-semibold text-gray-600 font-primary'}>Dashboard</Link> : <Auth_Btn user={user} />}
+
+            <div className='hidden md:block'>
+                {user ? <Link href='/dashboard' className='font-semibold text-gray-600 font-primary'>Dashboard</Link> : <Auth_Btn user={user} />}
             </div>
         </div>
     );
@@ -39,35 +75,3 @@ const MenuItems = [
     { name: "Pricing", link: "/pricing" },
     { name: "Contact", link: "/contact" },
 ];
-
-export function UserMenu({ user }: { user: any }) {
-    return (
-        <DropdownMenu>
-            <DropdownMenuTrigger className="flex items-center space-x-2 focus:outline-none">
-                <Image
-                    src={user?.picture ?? ''} 
-                    alt="User Avatar"
-                    width={32}
-                    height={32}
-                    className="rounded-full"
-                />
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-48">
-                <div className="p-2">
-                    <p className="text-gray-900 font-semibold">{user?.name}</p>
-                    <p className="text-sm text-gray-500">{user?.email}</p>
-                </div>
-                <hr className="my-1" />
-                <DropdownMenuItem>
-                    <Link href="/profile" className="block w-full text-left px-4 py-2">Profile</Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                    <Link href="/billing" className="block w-full text-left px-4 py-2">Billing</Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                    <Auth_Btn user={user} />
-                </DropdownMenuItem>
-            </DropdownMenuContent>
-        </DropdownMenu>
-    );
-}

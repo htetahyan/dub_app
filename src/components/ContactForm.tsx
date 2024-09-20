@@ -30,11 +30,11 @@ function ContactForm() {
   })
 
   return (
-    <div className='w-full flex flex-col gap-4'>
+    <div className='w-full flex flex-col gap-4 mb-4'>
       <form onSubmit={formik.handleSubmit}>
-        <div className='grid grid-cols-3 gap-4'>
+        <div className='grid  grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
           {fields.map((field) => (
-            <div className={`flex flex-col gap-1 ${field.name === 'Message' ? 'col-span-3 w-full' : 'col-span-1'}`} key={field.name}>
+            <div className={`flex flex-col gap-1 ${field.name === 'Message' ? 'lg:col-span-3 w-full' : 'lg:col-span-1'}`} key={field.name}>
               <label htmlFor={field.name} className='text-sm font-medium'>{field.label}</label>
               <input
                 type={field.type}

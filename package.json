@@ -38,6 +38,7 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "convert-audio": "^1.0.1",
+    "date-fns": "^4.1.0",
     "drizzle-orm": "^0.33.0",
     "elevenlabs": "^0.16.0",
     "fast-blurhash": "^1.1.2",
