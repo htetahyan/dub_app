@@ -26,10 +26,13 @@ export const convertMp3ToWav = async (file: Blob, extension: string): Promise<st
   if (!file) {
     throw new Error('The file Blob is undefined or null');
   }
+  console.log('Converting MP3 to WAV...');
+  
 
   // Generate file paths
   const tempFilePath = join(tmpdir(), `temp.${extension}`);
   const outputFilePath = join(tmpdir(), `${Math.random().toString(36).substr(2)}.wav`);
+console.log(tempFilePath,outputFilePath);
 
   const fileBuffer = Buffer.from(await file.arrayBuffer());
 
@@ -115,7 +118,6 @@ export const textToSpeech = async (text: string, voice: string, targetLanguage: 
 
 export const dubAudio = async (path:string,file: Blob,currentLanguage: string,targetLanguage: string) => {
   try {
-    console.log(`Converted WAV file path: ${path}`);
 
     const speechConfig = sdk.SpeechTranslationConfig.fromSubscription(
       process.env.AZURE_SPEECH_API_KEY as string,

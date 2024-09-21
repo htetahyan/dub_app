@@ -68,8 +68,9 @@ export async function sendEmailWithRetry(user: any, emailToken: string): Promise
     while (retries < MAX_RETRIES) {
         try {
             const mail = {
-                from: "contentally778@gmail.com",
-                to: user.email,
+
+                from: "contentally@gmail.com",
+                to: user?.email,
                 subject: 'Verify your email',
                 html: `
     <div style="font-family: Arial, sans-serif; line-height: 1.6; padding: 20px; background-color: #f4f4f4; border-radius: 8px;">
@@ -84,6 +85,7 @@ export async function sendEmailWithRetry(user: any, emailToken: string): Promise
   `,
             };
 
+console.log(mail);
 
             await transporter.sendMail(mail);
             break;
@@ -140,7 +142,8 @@ export const sentPasswordResetLink = async (email: string) => {
 
   try {
       const mail = {
-          from: "contentally778@gmail.com",
+          
+          from: "contentally@gmail.com",
           to: user.email,
           subject: 'Password Reset to your Contentally Account',
           html: `
@@ -158,8 +161,8 @@ export const sentPasswordResetLink = async (email: string) => {
    const sender= await transporter.sendMail(mail);
 
    if(sender.rejected) throw new Error("having load traffic try again later")
-  } catch (error) {
+  } catch (error:any) {
     console.error("Error sending email:", error);
-    throw new Error("Failed to send reset link.");
+    throw new Error(error.message);
   }
 };

@@ -1,6 +1,6 @@
 import React from 'react'
 import {prisma} from "~/utils/utils";
-import PasswordResetForm from "~/components/dashboard/PasswordResetForm";
+import PasswordResetForm from "~/components/PasswordResetForm";
 
 const page = async({ params}: { params: { mailToken: string } }) => {
   if(!params.mailToken) return null

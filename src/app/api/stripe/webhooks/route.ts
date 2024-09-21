@@ -1,3 +1,4 @@
+import { revalidateTag } from "next/cache";
 import { headers } from "next/headers";
 import { NextRequest, NextResponse } from "next/server"
 import { CreateWebhookStripe } from "~/service/payment.service";
@@ -11,7 +12,8 @@ export const POST = async (request: NextRequest) => {
     try {
         const wh=await CreateWebhookStripe(signature, body)
         console.log(wh);
-        
+        revalidateTag('profile')
+        revalidateTag('user')
         return NextResponse.json({message:"success"}, { status: 200 });
     } catch (error) {
         console.log(error)

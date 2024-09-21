@@ -78,7 +78,6 @@ const ProjectCard = ({ project }: any) => {
         </Button>
 
         {/* Download button */}
-        <DownloadButton url={audioUrl!} project={project} />
       </div>
 
       {/* Popup for audio player */}

@@ -43,12 +43,12 @@ export async function POST(request: NextRequest) {
 export async function GET(request: NextRequest, {params}: { params: { token: string } }) {
 
     try {
-        const access_token = request.cookies.get('access_token')?.value as string;
-        const id = await extractUserIdFromToken(access_token);
-        const user=await prisma.user.findFirstOrThrow({where:{id}})
+      
         const token = request.nextUrl.searchParams.get('token') as string;
-if(user?.emailVerifToken!==token){
-    return NextResponse.json({error: 'Please login again'}, {status: 401});
+        if(token==='' || token.length<10) return NextResponse.json({error: 'Please login again'}, {status: 401});
+        const user=await prisma.user.findFirst({where:{emailVerifToken:token}})
+if(!user){
+    return NextResponse.json({error: 'link is either expired or invalid'}, {status: 401});
 }
         if (!token) {
             return NextResponse.json({error: 'Please login again'}, {status: 401});

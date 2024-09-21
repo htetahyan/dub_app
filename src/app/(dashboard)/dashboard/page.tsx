@@ -6,7 +6,7 @@ import {redirect} from "next/navigation";
 const Page = async () => {
    const token=  cookies().get('access_token')?.value as string
     const user= await getCurrentUser(token)
-    if(!user) redirect('/signin')
+    if(user===null) redirect('/signin')
     else redirect('/dashboard/my-projects')
 
 };

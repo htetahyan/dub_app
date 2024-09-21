@@ -7,6 +7,7 @@ import { Alert, AlertDescription, AlertTitle } from '../ui/alert'
 import VideoPlayer from './VideoPlayer'
 import useSWR from 'swr'
 import {Loader, Loader2} from "lucide-react";
+import Footer, { UnderFooter } from '../Footer'
 const ProjectCard=dynamic(()=>import('./ProjectCard'))
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 const MyProjects = ({dubbingProjects}: any) => {
@@ -43,8 +44,9 @@ const [page, setPage] = React.useState(1);
         </div>
       ))}</div>
     </div>
-   <div className='mt-8 w-full mx-0 flex justify-center'>
+   <div className='mt-8 w-full mx-0 flex justify-start lg:justify-center'>
     <PaginationProjects setPage={setPage} page={page} totalProjects={  data?.totalProjects}/></div>
+    <UnderFooter/>
   </div>
   )
 }

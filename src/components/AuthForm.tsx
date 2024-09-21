@@ -84,7 +84,7 @@ const AuthForm = () => {
   });
 
   return (
-    <div className="w-1/3 max-w-md justify-self-center bg-white">
+    <div className="lg:w-1/3 w-3/4 justify-self-center bg-white">
       <h2 className="text-2xl font-bold mb-2 text-center">Create Account</h2>
       <p className="text-center text-gray-500 mb-4">
         Let's create an account to enter into Contentally AI Dashboard.

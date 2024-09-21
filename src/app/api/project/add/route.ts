@@ -6,6 +6,7 @@ import { prisma } from "~/utils/utils";
 import { extractUserIdFromToken } from "~/service/jwt.service";
 import { revalidateTag } from "next/cache";
 import { getCurrentPricing } from "~/service/server.service";
+import { getCurrentUser } from "~/service/user.service";
 const isNumber=(x:string)=>!isNaN(Number(x))
 export const POST = async (request: NextRequest) => {
     try {
@@ -13,12 +14,7 @@ export const POST = async (request: NextRequest) => {
         const token = request.cookies.get('access_token')?.value;
         if (!token) throw new Error('Missing access token');
 
-        const userId = await extractUserIdFromToken(token);
-        if (!userId) throw new Error('User not found');
-
-        const user = await prisma.user.findUnique({
-            where: { id: userId },
-        });
+       const user= await getCurrentUser(token);
         if (!user) throw new Error('User not found');
 
         // Extract form data
@@ -35,9 +31,8 @@ export const POST = async (request: NextRequest) => {
             throw new Error('Missing required fields');
         }
 
-const pricing=await getCurrentPricing(userId);
 const credits = duration;
-if(pricing.credits< credits) return NextResponse.json({message:'Insufficient credits for this project. Try with lower audio duration or upgrade your subscription'},{status:500});
+if(user.credits< credits) return NextResponse.json({message:'Insufficient credits for this project. Try with lower audio duration or upgrade your subscription'},{status:500});
 
 const audioUrl = await processDubbingAndSynthesis(fileName, file, voice, currentLanguage, translateTo);
 

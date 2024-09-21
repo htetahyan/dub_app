@@ -1,3 +1,4 @@
+import { User } from 'microsoft-cognitiveservices-speech-sdk'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import React from 'react'
@@ -37,7 +38,7 @@ const page = async() => {
             </Card>
         <p className='text-gray-500  mt-2'>Purchase credits or subscribe to a plan for move savings.</p>
        <div className='w-full '>
-       <Subscriptions/></div> 
+       <Subscriptions user={user}/></div> 
       
     </div>
   )

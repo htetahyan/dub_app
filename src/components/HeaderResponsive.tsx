@@ -9,7 +9,7 @@ const HeaderResponsive = async() => {
     const user = await getUserProfile(token as any) ??null;
 
     return (
-       <Header user={user ?? {}}/>
+       <Header user={user}/>
     );
 };
 

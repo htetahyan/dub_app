@@ -9,6 +9,7 @@ import { Logo } from '~/assets/exporter';
 import { Menu } from 'lucide-react'; // Import a menu icon
 
 const Header = ({ user }: { user: any }) => {
+    
     return (
         <div className='px-8 w-full max-w-full overflow-x-hidden flex justify-between items-center h-[90px]'>
             <div className='flex items-center gap-2'>
@@ -36,7 +37,7 @@ const Header = ({ user }: { user: any }) => {
                                 </Link>
                             ))}
                             <div>
-                                {user ? (
+                                {user  ? (
                                     <Link href='/dashboard' className='font-semibold text-gray-600 font-primary py-2'>Dashboard</Link>
                                 ) : (
                                     <Auth_Btn user={user} />

@@ -34,38 +34,9 @@ const Settings = ({ user }: { user: any }) => {
       toast.error(msg.message as string)
     }
   }
-  const sentPasswordResetLink = async () => {
-    if(!user?.email) toast.warning("no mail detect");
-    toast.promise(
-      new Promise(async (resolve, reject) => {
-        try {
-          // Example of an API request (adjust accordingly to your API)
-          const response = await fetch('/api/oauth/email/reset-password', {
-            method: 'POST',
-            body: JSON.stringify({ email:user?.email }),
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          });
-  
-          // Check if the response is OK (status code 200–299)
-          if (response.ok) {
-            resolve('Password reset link sent successfully!');
-          } else {
-            // You can throw an error if the response is not OK
-            throw new Error('Failed to send password reset link');
-          }
-        } catch (error:any) {
-          reject(error.message || 'Something went wrong');
-        }
-      }),
-      {
-        loading: 'Sending password reset link...',
-        success: 'Password reset link sent!',
-        error: 'Failed to send password reset link',
-      }
-    );
-  };
+ const passwordReset=async()=>{
+  await sentPasswordResetLink(user?.email)
+ }
   const nameChange = async () => {
 
     if(name.length===0) toast.warning("name cannot be empty");
@@ -157,7 +128,7 @@ const res=await response.json()
         <h2 className='text-2xl font-semibold text-gray-800 mb-4'>Reset Password</h2>
         <p className='text-gray-600 mb-4'>Send a reset link to the email associated with your account.</p>
         <div className='flex flex-col gap-4'>
-          <Button variant='destructive' onClick={sentPasswordResetLink} disabled={isMutating} className='text-white w-fit'>
+          <Button variant='destructive' onClick={passwordReset} disabled={isMutating} className='text-white w-fit'>
           {isMutating ? <Loader2 className='animate-spin' /> : 'sent password reset link'}
           </Button>
         </div>
@@ -167,3 +138,35 @@ const res=await response.json()
 }
 
 export default Settings
+export const sentPasswordResetLink = async (mail:string) => {
+  if(mail) toast.warning("no mail detect");
+  toast.promise(
+    new Promise(async (resolve, reject) => {
+      try {
+        // Example of an API request (adjust accordingly to your API)
+        const response = await fetch('/api/oauth/email/reset-password', {
+          method: 'POST',
+          body: JSON.stringify({ email:mail }),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+const res=await response.json()
+        // Check if the response is OK (status code 200–299)
+        if (response.ok) {
+          resolve(res.message);
+        } else {
+          // You can throw an error if the response is not OK
+          throw new Error(res.message);
+        }
+      } catch (error:any) {
+        reject(error.message || 'Something went wrong');
+      }
+    }),
+    {
+      loading: 'Sending password reset link...',
+      success: (msg:any) => msg,
+      error:  (msg:any) => msg,
+    }
+  );
+};

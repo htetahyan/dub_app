@@ -10,6 +10,7 @@ import { getGoogleOAuthURL } from '~/utils/getOAuthURL';
 import Image from 'next/image';
 import { BgSignin, google_icon, LogoWhite } from '~/assets/exporter';
 import { useRouter } from 'next/navigation';
+import ForgotPassword from './dashboard/ForgotPassword';
 const SignInForm = () => {
   // Validation Schema using Yup
   const validationSchema = Yup.object({
@@ -55,8 +56,8 @@ router.push('/dashboard')
 
   return (    <>    <div className=" w-screen grid lg:grid-cols-2 items-center h-screen z-10   bg-gray-100 text-black">
 <div className='w-full place-content-center flex justify-center  z-10'>
-    <div className='lg:w-2/3 w-full px-2  h-[25vh] flex flex-col justify-center '>
-    <Image src={LogoWhite} alt="icon"  className='  w-32 h-fit  text-white' />
+    <div className='lg:w-2/3 w-full px-2   lg:h-[25vh] flex flex-col justify-center '>
+    <Image src={LogoWhite} alt="icon"  className='  w-16 h-fit  text-white' />
     <h1 className="lg:-5xl text-2xl font-bold  mt-4 text-white">
     Translate your video or audio with voice cloning.
     </h1></div>
@@ -104,9 +105,7 @@ router.push('/dashboard')
           </div>
 
           <div className="flex justify-between items-center mb-4">
-            <a href="#" className="text-blue-500 text-sm">
-              Forget Password?
-            </a>
+            <ForgotPassword />
             <label className="inline-flex items-center text-sm">
               <input type="checkbox" className="form-checkbox h-4 w-4 text-blue-500" />
               <span className="ml-2">Remember Me</span>

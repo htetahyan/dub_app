@@ -29,7 +29,7 @@ const schema = Yup.object().shape({
   currentLanguage: Yup.string().required('Current Language is required'),
   translateTo: Yup.string().required('Translate To is required'),
   voice: Yup.string().required('Voice is required'),
-  sourceFile: Yup.mixed(),
+  sourceFile: Yup.mixed().required('Source File is required'),
 });
 
 const AddNewDubbing = () => {

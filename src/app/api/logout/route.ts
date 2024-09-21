@@ -5,7 +5,7 @@ import {revalidateTag} from "next/cache";
 export const POST = async (request: Request) => {
     try {
         cookies().delete('access_token')
-        cookies().delete('refresh_token')
+        cookies().delete('rt')
         revalidateTag('profile')
         return NextResponse.json({message: 'success'}, {status: 200});
     }catch (e) {

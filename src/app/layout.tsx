@@ -45,6 +45,14 @@ export default function RootLayout({
     })();
   `}
 </Script>
+<Script id="google" async src="https://www.googletagmanager.com/gtag/js?id=G-P55SK1JCCP"></Script>
+<Script id="google-script">
+{`  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-P55SK1JCCP');`}
+</Script>
         </html>
     );
 }

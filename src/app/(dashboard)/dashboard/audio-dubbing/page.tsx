@@ -1,6 +1,5 @@
 import React from 'react';
-import {Alert, AlertDescription, AlertTitle} from "~/components/ui/alert";
-import { Terminal} from "lucide-react";
+
 import AddNewDubbing from '~/components/dashboard/AddNewDubbing';
 import { cookies } from 'next/headers';
 import { getCachedProjects } from '~/service/server.service';

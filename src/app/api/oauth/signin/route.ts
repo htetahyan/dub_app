@@ -29,6 +29,8 @@ try {
     cookies().set('access_token',await generateAccessToken(user.id),cookieOptions(10));
     cookies().set('rt',await generateRefreshToken(user.id),cookieOptions(20));  
 revalidateTag('profile')
+revalidateTag('user')
+
     return NextResponse.json({message:  'success login'}, {status: 200, headers: { 'Content-Type': 'application/json' }})
     
 }catch(e:any){
