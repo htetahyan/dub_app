@@ -7,7 +7,9 @@ export const POST = async (request: Request) => {
         cookies().delete('access_token')
         cookies().delete('rt')
         revalidateTag('profile')
-        return NextResponse.json({message: 'success'}, {status: 200});
+        revalidateTag('user')
+
+return NextResponse.json({message:"Logout success..."},{status:200})
     }catch (e) {
         return NextResponse.json({message: 'failed'}, {status: 400});
     }

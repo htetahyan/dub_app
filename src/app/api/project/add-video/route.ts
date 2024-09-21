@@ -51,9 +51,9 @@ revalidateTag('user');
 
 
 return NextResponse.json({message:"success"},{status:200})
-    } catch (error) {
+    } catch (error:any) {
         console.log(error)
-        return NextResponse.json({message:'Something went wrong'},{status:500})
+        return NextResponse.json({message:error.message},{status:500})
     }
 }
 function normalizeTime(time: string): string {

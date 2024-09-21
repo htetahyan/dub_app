@@ -15,16 +15,30 @@ import { LogOut } from 'lucide-react';
 const DashboardSidebar = ({ user }: any) => {
   const router = useRouter();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-
+router.prefetch('/')
   const logout = async () => {
-    const res = await fetch('/api/oauth/logout', { method: 'POST' });
-    const data = await res.json() ?? {};
-    if (data?.message) {
-      toast.success(data.message ?? 'Logged out successfully');
-      router.push('/');
-    }
-  };
 
+  toast.promise(
+   new  Promise(async(resolve,reject)=>{
+
+     const res = await fetch('/api/oauth/logout', { method: 'POST' }).finally(()=>router.replace('/') );
+     const data=res.json() as any
+     if(res.ok) resolve(data?.message!)
+      else{
+    reject(data?.message!)}
+
+    })
+  ,{
+    loading:'logging out',
+    closeButton:true,
+    success:(msg:any)=> msg ?? 'logged out successfully',
+    error:(msg:any)=> msg ?? 'cannot log out right now'
+    
+  }
+
+
+)
+}
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };

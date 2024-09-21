@@ -6,18 +6,24 @@ import { useRouter } from 'next/navigation'
 import {toast} from "sonner";
 
 const Subscriptions = ({user}:any) => {
-    const router=useRouter()
-    const goToPayment=async()=>{
-        toast.loading('Redirecting to payment gateway...',{duration:3000})
-        if(!user)  router.push('/signin')
-        else {const res=await fetch('/api/stripe',{
-            method:'POST',
 
+    const router=useRouter()
+    const goToPayment=async(priceId:string,price:number)=>{
+        toast.loading('Redirecting to payment gateway...',{duration:3000})
+        if(!user || user===undefined) { 
+            router.push('/signin')}
+        else {
+    const res=await fetch('/api/stripe',{
+            method:'POST',
+            body:JSON.stringify({priceId,price})
         })
         const data=await res.json()
+        toast.dismiss()
 if(data?.url){
     window.location.href=data.url
-}       }
+}   
+if(data.message) toast.success(data.message!)
+    }
     }
   return (
     <div className='w-full h-fit mt-5'>
@@ -34,7 +40,9 @@ if(data?.url){
 </div>
 ))}
 </div>
-<Button variant={'default'} onClick={goToPayment} className='bg-default hover:bg-default/90'>Subscribe</Button>
+<Button variant={'default'} onClick={async()=>{
+  i===2?router.push('/contact') : await goToPayment(card.priceId as string,card.IntPrice as number)
+}} className='bg-default hover:bg-default/90'>{i==2?'contact':'subscribe'}</Button>
 </div>
 ))}</div>
     </div>
@@ -51,18 +59,23 @@ export default Subscriptions
 const planCards=[
     {
         name:"Pay Once",
+
         price:"5usd/50000 credit",
+        IntPrice:5,
 
         features:[
             'TTS -50000 words (~50min)',
             "Credit never expires",
             "1 concurrent dubbing Job",
         ],
+        priceId:'price_1PyWQmJM8edFj1dH4lKM99go'
 
     },
     {
         name:"Premium",
         price:"17usd/ 200000credits",
+        IntPrice:17,
+
         features:[
             'TTS -200minutes (or) Speech to speech (Dubbing) ',
             "Organize your notes and workflows",
@@ -70,6 +83,7 @@ const planCards=[
             "3 concurrent dubbing Jobs",
             "More Premium voices for TTS",
         ],
+        priceId:'price_1PyWQmJM8edFj1dH4lKM99go'
     },
     {
         name:"Custom",

@@ -5,17 +5,28 @@ import { prisma } from '~/utils/utils'
 
 import { cookies } from 'next/headers'
 import MyProjects from '~/components/dashboard/MyProjects'
+import { unstable_cache } from 'next/cache'
 const page = async () => {
   const accessToken=cookies().get('access_token')?.value
   const user = await getCurrentUser(accessToken)
   if (!user) redirect('/signin')
 
-  const dubbingProjects = await prisma.dubbingProject.findMany(
+  const dubbingProjects = await getCachedProject(user.id)
+  const data={...dubbingProjects,totalProjects:10}
+
+  return (
+ <MyProjects dubbingProjects={data} />
+  )
+}
+
+export default page
+const getCachedProject=unstable_cache(async (id:number)=>{
+ return await prisma.dubbingProject.findMany(
 
     {
       take: 6,
       orderBy: { createdAt: 'desc' },
-    where: { userId: user.id },
+    where: { userId: id },
     select: {
       id: true,
       dubbingId: true,
@@ -32,11 +43,5 @@ const page = async () => {
       projectType: true
     }
   })
-  const data={...dubbingProjects,totalProjects:10}
 
-  return (
- <MyProjects dubbingProjects={data} />
-  )
-}
-
-export default page
+},['user'],{tags:['user']})

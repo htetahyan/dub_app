@@ -9,13 +9,13 @@ import useSWR from 'swr'
 import {Loader, Loader2} from "lucide-react";
 import Footer, { UnderFooter } from '../Footer'
 const ProjectCard=dynamic(()=>import('./ProjectCard'))
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
+const fetcher = (url: string) => fetch(url, { next: { revalidate: 10 ,tags:['user']} }).then((res) => res.json());
 const MyProjects = ({dubbingProjects}: any) => {
 const [page, setPage] = React.useState(1);
   const { data,isLoading } = useSWR(`/api/project/get?page=${page}`, fetcher,{
-    fallbackData:dubbingProjects
+    fallbackData:dubbingProjects,
+    
   });
-  console.log(data?.totalProjects,';;;;;')
   return (
     <div className='w-fit  p-4 py-8 h-fit overflow-hidden '>
     <h1 className='font-bold text-3xl mb-4'>My Projects</h1>

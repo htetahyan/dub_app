@@ -4,6 +4,9 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
+import { Input } from '../ui/input';
+import { Button } from '../ui/button';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 
 const validationSchema = Yup.object().shape({
   projectName: Yup.string().required('Project name is required'),
@@ -41,8 +44,8 @@ const DubbingForm = () => {
   const formik = useFormik({
     initialValues: {
       projectName: '',
-      sourceLanguage: languages[0].language,
-      targetLanguage: languages[1].language,
+      sourceLanguage: languages[0].code,
+      targetLanguage: languages[1].code,
       audioSource: 'Upload',
       file: null,
       numberOfSpeakers: '',
@@ -67,12 +70,13 @@ const DubbingForm = () => {
         fetch('/api/project/add-video', {
           method: 'POST',
           body: formData,
-        }).then((res) => res.json()),
-        { loading: 'Creating project...', success: (res) => res.message, error: (res) => res.message }
+        }).then((res) => res.json()).finally(() => router.refresh()),
+        { loading: 'Creating project...', success: (res) => res.message, error: (res) => res.body }
         
       );
       setTimeout(() => {
         router.push('/dashboard/my-projects');
+       
       }, 3000);
     },
   });
@@ -107,19 +111,19 @@ const DubbingForm = () => {
         {/* Source language */}
         <div>
           <label className="block font-semibold">Source Language</label>
-          <select
+          <Select
             name="sourceLanguage"
-            value={formik.values.sourceLanguage}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            className="w-full border p-2 rounded"
-          >
+            defaultValue={formik.values.sourceLanguage}
+            onValueChange={() => formik.setFieldValue('sourceLanguage', formik.values.sourceLanguage)}
+          ><SelectTrigger className="w-full border p-2 rounded">
+              <SelectValue placeholder="Select a language" />
+            </SelectTrigger>
+            <SelectContent>
+
             {languages.map((lang) => (
-              <option key={lang.code} value={lang.language}>
-                {lang.language}
-              </option>
-            ))}
-          </select>
+<SelectItem key={lang.code} value={lang.code}>{lang.language}</SelectItem>             
+            ))} </SelectContent>
+          </Select>
           {formik.touched.sourceLanguage && formik.errors.sourceLanguage ? (
             <div className="text-red-600">{formik.errors.sourceLanguage}</div>
           ) : null}
@@ -128,19 +132,19 @@ const DubbingForm = () => {
         {/* Target language */}
         <div>
           <label className="block font-semibold">Target Language</label>
-          <select
+          <Select
             name="targetLanguage"
-            value={formik.values.targetLanguage}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            className="w-full border p-2 rounded"
-          >
+            defaultValue={formik.values.targetLanguage}
+            onValueChange={() => formik.setFieldValue('targetLanguage', formik.values.targetLanguage)}
+          ><SelectTrigger className="w-full border p-2 rounded">
+              <SelectValue placeholder="Select a language" />
+            </SelectTrigger>
+            <SelectContent>
+
             {languages.map((lang) => (
-              <option key={lang.code} value={lang.language}>
-                {lang.language}
-              </option>
-            ))}
-          </select>
+<SelectItem key={lang.code} value={lang.code}>{lang.language}</SelectItem>             
+            ))} </SelectContent>
+          </Select>
           {formik.touched.targetLanguage && formik.errors.targetLanguage ? (
             <div className="text-red-600">{formik.errors.targetLanguage}</div>
           ) : null}
@@ -149,23 +153,25 @@ const DubbingForm = () => {
         {/* Audio source */}
         <div>
           <label className="block font-semibold">Audio Source</label>
-          <select
+          <Select
             name="audioSource"
-            value={formik.values.audioSource}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            className="w-full border p-2 rounded"
-          >
-            <option value="Upload">Upload</option>
-            <option value="YouTube URL">YouTube URL</option>
-          </select>
+            defaultValue={formik.values.audioSource}
+            onValueChange={() => formik.setFieldValue('audioSource', formik.values.audioSource)}
+          ><SelectTrigger className="w-full border p-2 rounded">
+              <SelectValue placeholder="Select Audio Source" />
+            </SelectTrigger>
+            <SelectContent>
+
+            <SelectItem value="Upload">File</SelectItem>
+            <SelectItem value="YouTube URL">YouTube URL</SelectItem> </SelectContent>
+          </Select>
         </div>
 
         {/* Upload file */}
         {formik.values.audioSource === 'Upload' && (
           <div>
             <label className="block font-semibold">File Upload</label>
-            <input
+            <Input
               type="file"
               accept="video/*"
               name="file"
@@ -182,7 +188,7 @@ const DubbingForm = () => {
         {formik.values.audioSource === 'YouTube URL' && (
           <div>
             <label className="block font-semibold">YouTube URL</label>
-            <input
+            <Input
               type="text"
               name="url"
               value={formik.values.url}
@@ -200,7 +206,7 @@ const DubbingForm = () => {
         {/* Number of speakers */}
         <div>
           <label className="block font-semibold">Number of Speakers</label>
-          <input
+          <Input
             type="text"
             name="numberOfSpeakers"
             value={formik.values.numberOfSpeakers}
@@ -218,7 +224,7 @@ const DubbingForm = () => {
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="block font-semibold">Start time (hh:mm:ss)</label>
-            <input
+            <Input
               type="text"
               name="startTime"
               value={formik.values.startTime}
@@ -231,7 +237,7 @@ const DubbingForm = () => {
 
           <div>
             <label className="block font-semibold">End time (hh:mm:ss)</label>
-            <input
+            <Input
               type="text"
               name="endTime"
               value={formik.values.endTime}
@@ -244,9 +250,9 @@ const DubbingForm = () => {
         </div>
 
         {/* Submit button */}
-        <button type="submit" className="w-full bg-gray-600 text-white p-3 rounded mt-4 hover:bg-gray-700">
+        <Button type="submit" className="w-full bg-gray-600 text-white p-3 rounded mt-4 hover:bg-gray-700">
           Create dub
-        </button>
+        </Button>
       </form>
     </div>
   );
@@ -255,7 +261,6 @@ const DubbingForm = () => {
 export default DubbingForm;
 const languages = [
   { language: 'English', code: 'en' },
-  { language: 'Hindi', code: 'hi' },
   { language: 'Portuguese', code: 'pt' },
   { language: 'Chinese', code: 'zh' },
   { language: 'Spanish', code: 'es' },
@@ -282,5 +287,17 @@ const languages = [
   { language: 'Bulgarian', code: 'bg' },
   { language: 'Croatian', code: 'hr' },
   { language: 'Slovak', code: 'sk' },
-  { language: 'Tamil', code: 'ta' }
+  { language: 'Tamil', code: 'ta' },
+  // New languages added from the provided list
+  { language: 'English (USA)', code: 'en-US' },
+  { language: 'English (UK)', code: 'en-GB' },
+  { language: 'English (Australia)', code: 'en-AU' },
+  { language: 'English (Canada)', code: 'en-CA' },
+  { language: 'Spanish (Mexico)', code: 'es-MX' },
+  { language: 'French (Canada)', code: 'fr-CA' },
+  { language: 'Arabic (Saudi Arabia)', code: 'ar-SA' },
+  { language: 'Arabic (UAE)', code: 'ar-AE' },
+  { language: 'Hungarian', code: 'hu' },
+  { language: 'Norwegian', code: 'no' },
+  { language: 'Vietnamese', code: 'vi' },
 ];

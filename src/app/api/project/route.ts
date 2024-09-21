@@ -9,11 +9,13 @@ export const GET = async (req:NextRequest) => {
     const accessToken=req.cookies.get('access_token')?.value
     const user = await getCurrentUser(accessToken)     
      const dubbingId=req.nextUrl.searchParams.get('dubbingId')
+     const targetLanguage=req.nextUrl.searchParams.get('targetLanguage')
+      if (!dubbingId) return NextResponse.json({message:"Unauthorized"},{status:401})
       if (!user) return NextResponse.json({message:"Unauthorized"},{status:401})
-      const video= await getVideoFromId(dubbingId as string)
+      const video= await getVideoFromId(dubbingId as string,targetLanguage as string)
 return new Response(video, { status: 200,headers:{'Content-Type': 'video/mp4'} })
-  } catch (error) {
-    console.log(error)
-    return NextResponse.json({ message: 'An error occurred' }, { status: 400 })
+  } catch (error: any) {
+    console.log(error,'///////////////')
+    return NextResponse.json({ message: error.message??"Something went wrong" }, { status: 500 })
   }
 }

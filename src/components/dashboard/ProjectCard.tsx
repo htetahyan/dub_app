@@ -106,9 +106,11 @@ const ProjectCard = ({ project }: any) => {
             <div className="mt-4">
               <h3 className="text-lg font-semibold text-gray-800">{project.name}</h3>
               <p className="text-xs text-gray-500">{new Date(project.createdAt).toLocaleString()}</p>
-              <div className="grid grid-cols-2 gap-4 mt-4 text-sm text-gray-600">
+              <div className="grid grid-cols-2 gap-4 mt-4 text-sm md:text-md  text-gray-600">
                 <div><strong>Source Language:</strong> {project.currentLanguage}</div>
                 <div><strong>Target Language:</strong> {project.translateTo}</div>
+                <div><strong>credit cost:</strong> {project.creditCost} credits</div>
+
                 <div><strong>Duration:</strong> {getMinAndSecs(project.durationMinutes)} </div>
                 <div><strong>Voice:</strong> {project.voice}</div>
               </div>

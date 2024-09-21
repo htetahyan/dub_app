@@ -97,4 +97,4 @@ const cachedUser=unstable_cache(async(id)=>{
 
     const currentUser = {...user,credits:user.credits+credits}
 return currentUser
-},['user'],{tags:['user']})
+},['user'],{tags:['user'],revalidate:60})

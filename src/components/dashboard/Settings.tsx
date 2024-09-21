@@ -139,7 +139,7 @@ const res=await response.json()
 
 export default Settings
 export const sentPasswordResetLink = async (mail:string) => {
-  if(mail) toast.warning("no mail detect");
+  if(mail==='' || mail===null || mail===undefined) toast.warning("no mail detect");
   toast.promise(
     new Promise(async (resolve, reject) => {
       try {

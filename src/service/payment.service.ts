@@ -6,7 +6,7 @@ export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   typescript: true,
 });
 
-export const createCheckoutSession = async (user: { id: number; email: string }, priceId: string) => {
+export const createCheckoutSession = async (user: { id: number; email: string }, priceId: string,price:number) => {
   if (!user.id) {
     throw new Error("User ID is required");
   }
@@ -73,7 +73,8 @@ export const CreateWebhookStripe = async (signature: string, body: string) => {
   
       // Determine the credits based on the product or subscription
       // Example: Set credits to 100 for this subscription
-      const creditsToAdd = 100; 
+      const creditsToAdd  =product.name==='Premium' ?5000:200000; 
+
      await prisma.user.update({
         where: { id: parseInt(session.client_reference_id ?? '0', 10) },
         data: {

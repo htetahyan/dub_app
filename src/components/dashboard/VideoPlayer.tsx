@@ -6,6 +6,7 @@ import { Play } from 'lucide-react';
 import { DownloadButton } from '~/components/dashboard/DownloadButton';
 import { CgClose } from 'react-icons/cg';
 import { Badge } from '../ui/badge';
+import { toast } from 'sonner';
 
 const VideoPlayer = ({ project }: any) => {
   const [videoUrl, setVideoUrl] = useState<string | null>(null);
@@ -13,17 +14,28 @@ const VideoPlayer = ({ project }: any) => {
 
   const fetchVideo = async () => {
     try {
-      setIsLoading(true);
-      const response = await fetch(`/api/project?dubbingId=${project.dubbingId}`);
-      const blob = await response.blob();
-      const videoObjectUrl = URL.createObjectURL(blob);
-      setVideoUrl(videoObjectUrl);
-    } catch (error) {
-      console.error('Error fetching video:', error);
+        setIsLoading(true);
+        const response = await fetch(`/api/project?dubbingId=${project.dubbingId}&&targetLanguage=${project.translateTo}`);
+        const errorText = await response.json(); // Get the response text for better debugging
+
+        // Check if response is not ok and handle errors
+        if (!response.ok) {
+            console.error('Error fetching video:', response.status, errorText); // Log the error
+            throw new Error(` ${errorText.message}`);
+        }
+
+        const blob = await response.blob();
+        const videoObjectUrl = URL.createObjectURL(blob);
+        setVideoUrl(videoObjectUrl);
+    } catch (error: any) {
+        console.error('Error fetching video:', error);
+        // Show the error toast with more detailed error message
+        toast.error(`${error.message}`);
     } finally {
-      setIsLoading(false);
+        setIsLoading(false);
     }
-  };
+};
+
 
   return (
     <div className="p-4 w-full h-full">
@@ -52,7 +64,6 @@ const VideoPlayer = ({ project }: any) => {
               <div className="grid grid-cols-2 gap-2 mt-2 text-sm text-gray-600">
                 <div><strong>Source Language:</strong> {project.currentLanguage}</div>
                 <div><strong>Target Language:</strong> {project.translateTo}</div>
-                <div><strong>Watermarked:</strong> </div>
                 <div><strong>Credits Used:</strong> {project.creditsUsed}</div>
                 <div><strong>Dubbed Range:</strong> {project.dubbedRange}</div>
               </div>

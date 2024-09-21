@@ -4,9 +4,7 @@ import type { NextRequest } from 'next/server'
 export function middleware(request: NextRequest) {
   const token = request.cookies.get('access_token')?.value
   
-  console.log('Token:', token)
-  console.log('Pathname:', request.nextUrl.pathname)
-
+ 
   // If user is trying to access the dashboard but no token is present
   if (request.nextUrl.pathname.startsWith('/dashboard') && !token) {
     return NextResponse.redirect(new URL('/signin', request.url))

@@ -56,7 +56,7 @@ const faqItems = [
 ];
 export const UnderFooter=()=>{
   return (
-    <footer className="outline-1 py-8 w-full">
+    <footer className="outline-1 py-8 w-full bg-black text-white">
     <div className="container mx-auto px-4 md:px-8 lg:px-16 w-full">
       {/* Responsive grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
@@ -78,8 +78,8 @@ export const UnderFooter=()=>{
         </div>
 
         {/* Links */}
-        <div className='grid grid-cols-2 w-[90vw]  lg:grid-cols-3 lg:w-[50vw] gap-4'>
-        <div>
+        <div className='grid grid-cols-2 w-[90vw]  lg:grid-cols-2  lg:w-[50vw] gap-4'>
+        <div className='justify-self-center'>
           <h5 className="font-bold mb-4">Links</h5>
           <ul className="space-y-2">
             <li><Link href="/features" className="hover:underline">Features</Link></li>
@@ -91,23 +91,14 @@ export const UnderFooter=()=>{
         </div>
 
         {/* Resources */}
-        <div className=''>
-          <h5 className="font-bold mb-4">Resources</h5>
-          <ul className="space-y-2">
-            <li><Link href="/help-docs" className="hover:underline">Help docs</Link></li>
-            <li><Link href="/quick-start" className="hover:underline">Quick start guide</Link></li>
-            <li><Link href="/changelog" className="hover:underline">Changelog</Link></li>
-            <li><Link href="/blog" className="hover:underline">Blog</Link></li>
-          </ul>
-        </div>
+         
 
-        {/* Company */}
-        <div>
+        <div className='justify-self-center'>
           <h5 className="font-bold mb-4 ">Company</h5>
           <ul className="space-y-2">
-            <li><Link href="/about" className="hover:underline">About us</Link></li>
+            <li><Link href="/about-us" className="hover:underline">About us</Link></li>
             <li><Link href="/privacy-policy" className="hover:underline">Privacy policy</Link></li>
-            <li><Link href="/terms-of-service" className="hover:underline">Terms of service</Link></li>
+            <li><Link href="/terms" className="hover:underline">Terms of service</Link></li>
             <li><Link href="/contact" className="hover:underline">Contact us</Link></li>
             <li><Link href="/discord" className="hover:underline">Discord</Link></li>
             <li><Link href="/twitter" className="hover:underline">Twitter</Link></li>
