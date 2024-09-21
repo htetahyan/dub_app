@@ -1,9 +1,12 @@
+import { Metadata } from 'next';
 import { cookies } from 'next/headers';
 import Image from 'next/image';
 import React from 'react';
 import { Spiral, Star, Vector14 } from '~/assets/exporter';
 import Subscriptions from '~/components/home/Subscriptions';
+import metaTag from '~/components/MetaTag';
 import { getCurrentUser } from '~/service/user.service';
+export const metadata: Metadata =metaTag("if you have any question or just want to know about our software , just say hello","Contact")
 
 const Page = async () => {
     const accessToken = cookies().get('access_token')?.value;

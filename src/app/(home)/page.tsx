@@ -10,6 +10,9 @@ import Features from '~/components/home/features';
 import Subscriptions from '~/components/home/Subscriptions';
 import { getCurrentUser } from '~/service/user.service';
 import { cookies } from 'next/headers';
+import metaTag from '~/components/MetaTag';
+import { Metadata } from 'next';
+export const metadata: Metadata =metaTag("Transform your video to another language within a minute","Home")
 
 
 const Page = async () => {

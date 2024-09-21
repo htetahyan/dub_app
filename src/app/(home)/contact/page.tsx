@@ -1,7 +1,10 @@
+import { Metadata } from 'next'
 import Image from 'next/image'
 import React from 'react'
 import { Fb, Spiral, Star, Vector14 } from '~/assets/exporter'
 import ContactForm from '~/components/ContactForm'
+import metaTag from '~/components/MetaTag'
+export const metadata: Metadata =metaTag("if you have any question or just want to know about our software , just say hello","Contact")
 
 const Page = () => {
   return (

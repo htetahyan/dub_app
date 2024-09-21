@@ -3,8 +3,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 import localFont from "next/font/local";
+import metaTag from "~/components/MetaTag";
 
-import { cn } from "~/utils/utils";
 import {Toaster} from "~/components/ui/sonner";
 import Script from "next/script";
 const NeueMontrealRegular=localFont(
@@ -16,7 +16,12 @@ const NeueMontrealRegular=localFont(
 )
 
 //export const metadata: Metadata = await MetaTag()
+export const metadata: Metadata =metaTag("Transform your video to another language within a minute","Contentally")
 
+    export const viewport = {
+        width: 'device-width',
+        initialScale: 1,
+      };
 export default function RootLayout({
                                        children,
                                    }: Readonly<{

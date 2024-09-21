@@ -51,9 +51,8 @@ const VideoPlayer = ({ project }: any) => {
               <p className="text-xs text-gray-500">{new Date(project.createdAt).toLocaleString()}</p>
               <div className="grid grid-cols-2 gap-2 mt-2 text-sm text-gray-600">
                 <div><strong>Source Language:</strong> {project.currentLanguage}</div>
-                <div><strong>Target Language:</strong> {project.targetLanguage}</div>
-                <div><strong>Video Resolution:</strong> {project.resolution}</div>
-                <div><strong>Watermarked:</strong> {project.watermarked ? 'Yes' : 'No'}</div>
+                <div><strong>Target Language:</strong> {project.translateTo}</div>
+                <div><strong>Watermarked:</strong> </div>
                 <div><strong>Credits Used:</strong> {project.creditsUsed}</div>
                 <div><strong>Dubbed Range:</strong> {project.dubbedRange}</div>
               </div>
@@ -73,8 +72,11 @@ const VideoPlayer = ({ project }: any) => {
         <div className="text-sm text-gray-600">
           <div className="flex items-center gap-2">
             <p>Language: {project.currentLanguage}</p>
+            
             <Badge>{project?.projectType}</Badge>
           </div>
+          <div><strong>Target Language:</strong> {project.translateTo}</div>
+
           <p>Date: {new Date(project.createdAt).toLocaleString()}</p>
         </div>
 
