@@ -8,7 +8,7 @@ import {prisma} from "~/utils/utils";
 import { sendEmailWithRetry } from "~/service/oAuth.service";
 import { getCurrentUser } from "~/service/user.service";
 
-
+import {revalidateTag} from "next/cache";
 
 export async function POST(request: NextRequest) {
 
@@ -58,6 +58,7 @@ if(!user){
             where: {emailVerifToken: token,id: user?.id},
             data: {emailVerifToken: '', isEmailVerified: true}
         });
+        revalidateTag('user')
         return NextResponse.json({message: 'Email verified successfully'}, {status: 200});
     } catch (error) {
         console.error('Error in GET request:', error);

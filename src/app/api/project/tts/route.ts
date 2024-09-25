@@ -24,7 +24,7 @@ export const POST = async (request: Request) => {
     if(user?.credits! <parseInt(totalCredits)){
         return NextResponse.json({message: 'credit is not enough'}, {status: 200});
     }
-    const speechAudioData=await textToSpeech(text,voice,targetLanguage,currentLanguage)
+    const speechAudioData=await textToSpeech(text,voice,targetLanguage)
     const url = await uploadArrayBuffer(speechAudioData as Buffer, `${projectName}.wav` );
     await prisma.dubbingProject.create({
         data: {

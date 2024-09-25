@@ -4,8 +4,8 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlserver"
-  url      = env("AZURE_SQL_DB_STRING")
+  provider = "mysql"
+  url      = env("MYSQL_DB_STRING")
 }
 
 model User {
@@ -25,8 +25,8 @@ model User {
   isSubscribed     Boolean          @default(false)
   credits          Int              @default(10)
   subscriptions    Subscription[]
-  dubbingProjects  DubbingProject[]
 
+  dubbingProjects  DubbingProject[]
   subscriptionHistories SubscriptionHistory[]
   payments              Payment[]
   auditTrails           AuditTrail[]

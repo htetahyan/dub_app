@@ -31,7 +31,7 @@ export const POST = async (request: NextRequest) => {
             throw new Error('Missing required fields');
         }
 
-const credits = duration;
+const credits = Math.ceil(duration/60 )*1000;
 if(user.credits< credits) return NextResponse.json({message:'Insufficient credits for this project. Try with lower audio duration or upgrade your subscription'},{status:500});
 
 const audioUrl = await processDubbingAndSynthesis(fileName, file, voice, currentLanguage, translateTo);
