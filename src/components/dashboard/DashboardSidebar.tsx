@@ -44,7 +44,6 @@ const DashboardSidebar = ({ user }: any) => {
     { label: 'audio translation', icon: Music, path: '/audio-dubbing' },
     { label: 'video translation', icon: Videotape, path: '/video-dubbing' },
     { label: 'text to speech', icon: Speech, path: '/text-to-speech' },
-    { label: 'video Summary', icon: Highlighter, path: '/video-summary' },
 
   ];
 projectBtns.forEach((btn) => {
